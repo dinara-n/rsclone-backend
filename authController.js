@@ -121,7 +121,8 @@ class AuthController {
 
   async getTodos(req, res, next) {
     try {
-      const todos = await authService.getTodos();
+      const queryParams = req.query;
+      const todos = await authService.getTodos(queryParams);
       res.json(todos);
     } catch (err) {
       console.log(err);

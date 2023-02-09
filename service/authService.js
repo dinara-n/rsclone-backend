@@ -115,13 +115,50 @@ class AuthService {
     // if (alreadyExists) {
     //   throw ApiError.BadRequest('User with such email already exists');
     // }
+    const [ year, month, rest ] = todo.data.startTime.split('-');
+    const [ day ] = rest.split('T');
 
-    const todoData = await Todo.create(todo);
+    const todoData = await Todo.create({
+      ...todo,
+      extra: { year, month, day },
+    });
     return { addTodo: true, todoData};
   }
 
-  async getTodos() {
-    const todos = await Todo.find().populate({ path: 'users', select: 'data.surname data.mail role' }).populate({ path: 'company', select: 'data.companyName contacts.workers' });
+  async getTodos(queryParams) {
+    let [ year, month, day ] = queryParams.date ? queryParams.date.split('-') : '';
+
+    if (queryParams.range === 'month') {
+      const today = new Date();
+      year = year || today.getFullYear().toString();
+      month = month || (today.getMonth() + 1).toString().padStart(2, '0');
+      const dayToday = today.getDate().toString().padStart(2, '0');
+      const todos = await Todo.aggregate([
+        { $match: { 'extra.year': year, 'extra.month': month } },
+        { $group: {_id: { day: '$extra.day', isDone: '$isDone' }, count: { $sum: 1 } } },
+      ]);
+      const daysInThisMonth = new Date(year, month, 0).getDate();
+      const todosByDays = Array(daysInThisMonth).fill().map((_) => {
+        return { complete: 0, future: 0, missed: 0 };
+      });
+      todos.forEach((todo) => {
+        if (todo._id.isDone) {
+          todosByDays[todo._id.day - 1].complete = todo.count;
+          return;
+        }
+        if (+todo._id.day < +dayToday) {
+          todosByDays[todo._id.day - 1].missed = todo.count;
+          return;
+        }
+        todosByDays[todo._id.day - 1].future = todo.count;
+        return;
+      });
+      return todosByDays;
+    }
+
+    const todos = await Todo.find({}, { data: 1, isDone: 1 })
+    .populate({ path: 'users', select: 'data.surname data.mail role' })
+    .populate({ path: 'company', select: 'data.companyName contacts.workers.firstName contacts.workers.patronymic contacts.workers.surname' });
     return todos;
   }
 }

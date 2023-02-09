@@ -18,7 +18,7 @@ router.get('/auth/refresh', authController.refresh);
 router.get('/users', authController.getUsers);
 router.post('/add-company', authController.addCompany);
 router.get('/companies', authController.getCompanies);
-router.post('/add-todo', authController.addTodo);
+router.post('/todo', authController.addTodo);
 router.get('/todos', authController.getTodos);
 
 export default router;
