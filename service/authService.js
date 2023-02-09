@@ -132,7 +132,9 @@ class AuthService {
       const today = new Date();
       year = year || today.getFullYear().toString();
       month = month || (today.getMonth() + 1).toString().padStart(2, '0');
-      const dayToday = today.getDate().toString().padStart(2, '0');
+      const dayToday = today.getDate();
+      const monthToday = today.getMonth() + 1;
+      const yearToday = today.getFullYear();
       const todos = await Todo.aggregate([
         { $match: { 'extra.year': year, 'extra.month': month } },
         { $group: {_id: { day: '$extra.day', isDone: '$isDone' }, count: { $sum: 1 } } },
@@ -142,15 +144,18 @@ class AuthService {
         return { complete: 0, future: 0, missed: 0 };
       });
       todos.forEach((todo) => {
+        const day = +todo._id.day;
         if (todo._id.isDone) {
-          todosByDays[todo._id.day - 1].complete = todo.count;
+          todosByDays[day - 1].complete = todo.count;
           return;
         }
-        if (+todo._id.day < +dayToday) {
-          todosByDays[todo._id.day - 1].missed = todo.count;
+        if ((year == yearToday && month == monthToday && day < dayToday)
+          || (year == yearToday && month < monthToday)
+          || (year < yearToday)) {
+          todosByDays[day - 1].missed = todo.count;
           return;
         }
-        todosByDays[todo._id.day - 1].future = todo.count;
+        todosByDays[day - 1].future = todo.count;
         return;
       });
       return todosByDays;
