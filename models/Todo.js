@@ -9,8 +9,13 @@ const Todo = new Schema({
     text: { type: String, unique: false, required: false },
   },
   isDone: { type: Boolean, unique: false, required: true },
-  company: { type: Schema.Types.ObjectId, unique: false, required: false, ref: 'Company' },
-  users: [{ type: Schema.Types.ObjectId, unique: false, required: false, ref: 'User' }],
+  extra: {
+    year: { type: String, unique: false, required: true },
+    month: { type: String, unique: false, required: true },
+    day: { type: String, unique: false, required: true },
+  },
+  company: { type: Schema.Types.ObjectId, unique: false, required: true, ref: 'Company' },
+  users: [{ type: Schema.Types.ObjectId, unique: false, required: true, ref: 'User' }],
 });
 
 export default model('Todo', Todo);
