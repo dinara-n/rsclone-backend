@@ -16,6 +16,7 @@ const User = new Schema({
   },
   // companies: [{ type: Schema.Types.ObjectId, unique: false, required: false, ref: 'Company' }],
   // todos: [{ type: Schema.Types.ObjectId, unique: false, required: false, ref: 'Todo' }],
+  archived: { type: Boolean, unique: false, required: false },
 },
 {
   toJSON: { virtuals: true },

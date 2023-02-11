@@ -3,12 +3,12 @@ import { Schema, model } from "mongoose";
 const Company = new Schema({
   data: {
     companyName: { type: String, unique: false, required: true },
-    inn: { type: Number, unique: true, required: true },
+    inn: { type: Number, unique: true, required: false },
     address: { type: String, unique: false, required: false },
   },
   contacts: {
     commonPhone: [{ type: String, unique: false, required: false }],
-    commonMail: { type: String, unique: false, required: true },
+    commonMail: { type: String, unique: false, required: false },
     workers: [{
       firstName: { type: String, unique: false, required: false },
       patronymic: { type: String, unique: false, required: false },
@@ -19,7 +19,7 @@ const Company = new Schema({
     }],
   },
   users: [{ type: Schema.Types.ObjectId, unique: false, required: false, ref: 'User' }],
-  // todos: [{ type: Schema.Types.ObjectId, unique: false, required: false, ref: 'Todo' }],
+  archived: { type: Boolean, unique: false, required: false },
 },
 {
   toJSON: { virtuals: true },

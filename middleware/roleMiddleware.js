@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import secretAccessKey from "../config.js";
+// import secretAccessKey from "../config.js";
 import ApiError from "../errors/apiError.js";
 import tokenService from "../service/tokenService.js";
 
