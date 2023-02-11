@@ -74,10 +74,16 @@ class TodosService {
   async getTodos(queryParams) {
     let [ year, month, day ] = queryParams.date ? queryParams.date.split('-') : '';
 
+    if (month && !(month > 0 && month <= 12) || year && isNaN(year)) {
+      throw ApiError.BadRequest('Incorrect date');
+    }
+
     if (queryParams.range === 'month') {
       const now = new Date();
-      year = year || now.getFullYear().toString();
-      month = month || (now.getMonth() + 1).toString().padStart(2, '0');
+      if (!month || !year) {
+        year = now.getFullYear().toString();
+        month = (now.getMonth() + 1).toString().padStart(2, '0');
+      }
       const dayToday = now.getDate();
       const monthToday = now.getMonth() + 1;
       const yearToday = now.getFullYear();
@@ -85,8 +91,8 @@ class TodosService {
         { $match: { 'extra.year': year, 'extra.month': month } },
         { $group: {_id: { day: '$extra.day', isDone: '$isDone' }, count: { $sum: 1 } } },
       ]);
-      const daysInThisMonth = new Date(year, month, 0).getDate();
-      const todosByDays = Array(daysInThisMonth).fill().map((_) => {
+      const daysInMonth = new Date(year, month, 0).getDate();
+      const todosByDays = Array(daysInMonth).fill().map((_) => {
         return { complete: 0, future: 0, missed: 0 };
       });
       todos.forEach((todo) => {
@@ -105,6 +111,63 @@ class TodosService {
         return;
       });
       return todosByDays;
+    }
+
+    if (queryParams.range === 'day') {
+      const daysInMonth = new Date(year, month, 0).getDate();
+  
+      if (day && !(day > 0 && day <= daysInMonth)) {
+        throw ApiError.BadRequest('Incorrect date');
+      }
+      if (!day || !month || !year) {
+        const now = new Date();
+        day = now.getDate().toString();
+        year = now.getFullYear().toString();
+        month = (now.getMonth() + 1).toString().padStart(2, '0');
+      }
+
+      const todosFormDB = await Todo.find({ 'extra.day': day, 'extra.month': month, 'extra.year': year }, { data: 1, isDone: 1 })
+        .populate({ path: 'users', select: 'data.surname data.mail role' })
+        .populate({ path: 'company', select: 'data.companyName contacts.workers.firstName contacts.workers.patronymic contacts.workers.surname contacts.workers._id' });
+
+      const todos = todosFormDB.map((todo) => {
+        const start = new Date(todo.data.startTime).getTime();
+        const end = new Date(todo.data.endTime).getTime();
+        return { data: todo.data, isDone: todo.isDone, start, end, users: todo.users, company: todo.company };
+      });
+
+      const columns = [];
+      let columnsNumber = 0;
+
+      todos.forEach((todo) => {
+        columns.sort((a, b) => {
+          if (a.end !== b.end) {
+            return a.end - b.end;
+          }
+          return a.column - b.column;
+        });
+
+        const prevTodosComplete = columns.length && columns.every((item) => item.end <= todo.start);
+        if (prevTodosComplete) {
+          const firstColumnIndex = columns.findIndex((item) => item.column === 1);
+          columns[firstColumnIndex].end = todo.end;
+          todo.column = 1;
+          return;
+        }
+
+        const freeColumnIndex = columns.findIndex((item) => item.end <= todo.start);
+        if (freeColumnIndex !== -1) {
+          columns[freeColumnIndex].end = todo.end;
+          todo.column = columns[freeColumnIndex].column;
+          return;
+        } else {
+          columnsNumber += 1;
+          columns.push({ end: todo.end, column: columnsNumber });
+          todo.column = columnsNumber;
+          return;
+        }
+      });
+      return { todos, columnsNumber };
     }
 
     const todos = await Todo.find({}, { data: 1, isDone: 1 })

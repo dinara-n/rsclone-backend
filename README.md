@@ -919,6 +919,11 @@ Returns json data about todos.\
     If `range=month` param is passed, api returns json with complete, missed and future tasks count by days for the specified month. If 'date' param is not passed, current month will be used.\
     Если передан параметр `range=month`, апи вернет json с количеством завершенных, пропущенных и будущих задач по дням за указанный месяц. Если параметр 'date' не передан, возьмется текущий месяц.
 
+    `range=day&date=2023-02-11`
+
+    If `range=day` param is passed, api returns json with todos for the specified day and column number for those todos. If 'date' param is not passed, current date will be used.\
+    Если передан параметр `range=day`, апи вернет json с задачами за указанный день и номером колонки задачи. Если параметр 'date' не передан, возьмется текущая дата.
+
     If query params are not passed, api will return all tasks.\
     Если query-параметры не указаны, вернется список задач за все время.
 
