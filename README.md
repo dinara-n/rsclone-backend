@@ -478,7 +478,7 @@ Returns json data about companies.\
 **Add company**
 ----
 Creates a new company.\
-Создает новую компания.
+Создает новую компанию.
 
 <details>
 
@@ -1158,6 +1158,326 @@ Updates attributes of specified todo.\
     * **Code:** 403 FORBIDDEN <br />
 
     * **Code:** 404 NOT FOUND <br />
+
+* **Notes:**
+
+    None
+
+</details>
+
+**Add client**
+----
+Creates a new client.\
+Создает нового клиента.
+
+<details>
+
+* **URL**
+
+    /clients
+
+* **Method:**
+
+    `POST`
+
+* **Headers:**
+
+    `'Authorization': 'Bearer [access-token]'`
+
+    Is inserted into requests automatically by an axios interceptor.\
+    Вставляется в запросы автоматически.
+
+    `'Content-Type': 'application/json'`
+
+*  **URL Params**
+
+    None
+
+* **Query Params**
+
+    None
+
+* **Data Params**
+
+    ```json
+      {
+        "client": {
+            "firstName": "CFAa",
+            "patronymic": "CFAa",
+            "surname": "CFAa",
+            "birthday": "1989-04-08",
+            "mail": "cfaa@gmail.com",
+            "phone": [
+                "+777"
+            ]
+        },
+        "companyId": "63e3e28f3bf7fbab6532f051"
+      }
+    ```
+
+* **Success Response:**
+
+  * **Code:** 200 OK <br />
+    **Content:** 
+    ```json
+      {
+        "newClient": {
+          "firstName": "CFAa",
+          "patronymic": "CFAa",
+          "surname": "CFAa",
+          "birthday": "1989-04-08",
+          "mail": "cfaa@gmail.com",
+          "phone": [
+              "+777"
+          ]
+        }
+      }
+    ```
+ 
+* **Error Response:**
+
+    * **Code:** 400 BAD REQUEST <br />
+
+    * **Code:** 401 UNAUTHORIZED <br />
+
+    * **Code:** 403 FORBIDDEN <br />
+
+* **Notes:**
+
+    
+</details>
+
+**Update client**
+----
+Updates attributes of a specified client.\
+Обновляет данные указанного клиента.
+
+<details>
+
+* **URL**
+
+    /clients/:id
+
+* **Method:**
+
+    `PATCH`
+
+* **Headers:**
+
+    `'Authorization': 'Bearer [access-token]'`
+
+    Is inserted into requests automatically by an axios interceptor.\
+    Вставляется в запросы автоматически.
+
+    `'Content-Type': 'application/json'`
+
+*  **URL Params**
+
+    **Required:**
+
+    `id=[string]`
+
+* **Query Params**
+
+    None
+
+* **Data Params**
+
+    ```json
+      {
+        "mail": "cfaaa@gmail.com"
+      }
+    ```
+
+* **Success Response:**
+
+  * **Code:** 200 OK <br />
+    **Content:** 
+    ```json
+      {
+        "updatedWorker": {
+            "firstName": "CFAa",
+            "patronymic": "CFAa",
+            "surname": "CFAa",
+            "birthday": "1989-04-08",
+            "mail": "cfaaa@gmail.com",
+            "phone": [
+                "+777"
+            ],
+            "_id": "63e81bbce2d6e2ef8dab3d88"
+        }
+      }
+    ```
+ 
+* **Error Response:**
+
+    * **Code:** 400 BAD REQUEST <br />
+
+    * **Code:** 401 UNAUTHORIZED <br />
+
+    * **Code:** 403 FORBIDDEN <br />
+
+    * **Code:** 404 NOT FOUND <br />
+
+* **Notes:**
+
+    None
+
+</details>
+
+**Delete client**
+----
+Delete specified client.\
+Удаляет указанного клиента.
+
+<details>
+
+* **URL**
+
+    /clients/:id
+
+* **Method:**
+
+    `DELETE`
+
+* **Headers:**
+
+    `'Authorization': 'Bearer [access-token]'`
+
+    Is inserted into requests automatically by an axios interceptor.\
+    Вставляется в запросы автоматически.
+
+*  **URL Params**
+
+    **Required:**
+ 
+    `id=[string]`
+
+* **Query Params**
+
+    None
+
+* **Data Params**
+
+    None
+
+* **Success Response:**
+
+  * **Code:** 200 OK <br />
+    **Content:** 
+    ```json
+      {
+        "deletedWorker": [
+            {
+                "firstName": "CFAa",
+                "patronymic": "CFAa",
+                "surname": "CFAa",
+                "birthday": "1989-04-08",
+                "mail": "cfaaa@gmail.com",
+                "phone": [
+                    "+777"
+                ],
+                "_id": "63e81bbce2d6e2ef8dab3d88"
+            }
+        ]
+      }
+    ```
+
+* **Error Response:**
+
+    * **Code:** 400 BAD REQUEST <br />
+
+    * **Code:** 401 UNAUTHORIZED <br />
+
+    * **Code:** 403 FORBIDDEN <br />
+
+    * **Code:** 404 NOT FOUND <br />
+
+* **Notes:**
+
+    None
+
+</details>
+
+**Get Clients**
+----
+Returns json data about clients.\
+Возвращает json с данными о клиентах.
+
+<details>
+
+* **URL**
+
+    /clients
+
+* **Method:**
+
+    `GET`
+
+* **Headers:**
+    
+    `'Authorization': 'Bearer [access-token]'`
+
+    Is inserted into requests automatically by an axios interceptor.\
+    Вставляется в запросы автоматически.
+
+*  **URL Params**
+
+    None
+
+* **Query Params**
+
+    **Optional:**
+
+    None
+
+* **Data Params**
+
+    None
+
+* **Success Response:**
+
+  * **Code:** 200 OK <br />
+    **Content:** 
+    ```json
+      [
+        {
+          "firstName": "CBBbb",
+          "patronymic": "CBB",
+          "surname": "CBB",
+          "birthday": "1990-02-28",
+          "mail": "cbb@gmail.com",
+          "phone": [
+              "+777"
+          ],
+          "_id": "63e7e5c3d46c32fcbf7891fa",
+          "companyName": "CB",
+          "companyId": "63e3e28f3bf7fbab6532f051",
+          "users": [
+              {
+                  "data": {
+                      "surname": "C",
+                      "mail": "c@gmail.com"
+                  },
+                  "_id": "63e37f79609334e79cd043d9",
+                  "id": "63e37f79609334e79cd043d9"
+              },
+              {
+                  "data": {
+                      "surname": "D",
+                      "mail": "d@gmail.com"
+                  },
+                  "_id": "63e37fa2609334e79cd043dc",
+                  "id": "63e37fa2609334e79cd043dc"
+              }
+          ]
+        }
+      ]
+    ```
+ 
+* **Error Response:**
+
+    None
 
 * **Notes:**
 
