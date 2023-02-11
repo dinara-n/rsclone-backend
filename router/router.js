@@ -3,6 +3,7 @@ const router = new Router();
 import authController from "../controllers/authController.js";
 import usersController from "../controllers/usersController.js";
 import companiesController from "../controllers/companiesController.js";
+import clientsController from "../controllers/clientsController.js";
 import todosController from "../controllers/todosController.js";
 import { body } from "express-validator";
 // import authMiddleware from "../middleware/authMiddleware.js";
@@ -51,6 +52,11 @@ router.patch('/companies/archived/:id', companiesController.undeleteCompany);
 
 router.get('/companies', companiesController.getCompanies);
 // router.get('/companies/archived', companiesController.getArchivedCompanies);
+
+router.post('/clients', clientsController.addClient);
+router.patch('/clients/:id', clientsController.updateClient);
+router.delete('/clients/:id', clientsController.deleteClient);
+router.get('/clients', clientsController.getClients);
 
 router.post('/todos', [
   body('data.type', 'Todo type is required').notEmpty(),
