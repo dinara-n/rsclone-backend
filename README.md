@@ -444,7 +444,8 @@ Returns json data about companies.\
 * **Success Response:**
 
   * **Code:** 200 OK <br />
-    **Content:** 
+    **Content:**
+    Without query params:
     ```json
       [
         {
@@ -461,7 +462,37 @@ Returns json data about companies.\
           "companies": [],
           "todos": [],
           "id": "63e37f2578e976f7eec632ea"
-        }
+        },
+        ...
+      ]
+    ```
+    '?range=month'
+    ```json
+      [
+        {
+          "complete": 0,
+          "future": 0,
+          "missed": 0
+        },
+        ...
+      ]
+    ```
+    '?range=day'
+    ```json
+      [
+        "todos": [
+          ...
+        ],
+        "todosPlacement": [
+          {
+            "_id": "63e82f3bdcda56cdb4cd0607",
+            "start": 1676174400000,
+            "end": 1676179800000,
+            "column": 1
+          },
+          ...
+        ],
+        "columnsNumber": 4
       ]
     ```
  
@@ -1165,6 +1196,92 @@ Updates attributes of specified todo.\
 
 </details>
 
+**Get Clients**
+----
+Returns json data about clients.\
+Возвращает json с данными о клиентах.
+
+<details>
+
+* **URL**
+
+    /clients
+
+* **Method:**
+
+    `GET`
+
+* **Headers:**
+    
+    `'Authorization': 'Bearer [access-token]'`
+
+    Is inserted into requests automatically by an axios interceptor.\
+    Вставляется в запросы автоматически.
+
+*  **URL Params**
+
+    None
+
+* **Query Params**
+
+    **Optional:**
+
+    None
+
+* **Data Params**
+
+    None
+
+* **Success Response:**
+
+  * **Code:** 200 OK <br />
+    **Content:** 
+    ```json
+      [
+        {
+          "firstName": "CBBbb",
+          "patronymic": "CBB",
+          "surname": "CBB",
+          "birthday": "1990-02-28",
+          "mail": "cbb@gmail.com",
+          "phone": [
+              "+777"
+          ],
+          "_id": "63e7e5c3d46c32fcbf7891fa",
+          "companyName": "CB",
+          "companyId": "63e3e28f3bf7fbab6532f051",
+          "users": [
+              {
+                  "data": {
+                      "surname": "C",
+                      "mail": "c@gmail.com"
+                  },
+                  "_id": "63e37f79609334e79cd043d9",
+                  "id": "63e37f79609334e79cd043d9"
+              },
+              {
+                  "data": {
+                      "surname": "D",
+                      "mail": "d@gmail.com"
+                  },
+                  "_id": "63e37fa2609334e79cd043dc",
+                  "id": "63e37fa2609334e79cd043dc"
+              }
+          ]
+        }
+      ]
+    ```
+ 
+* **Error Response:**
+
+    None
+
+* **Notes:**
+
+    None
+
+</details>
+
 **Add client**
 ----
 Creates a new client.\
@@ -1392,92 +1509,6 @@ Delete specified client.\
     * **Code:** 403 FORBIDDEN <br />
 
     * **Code:** 404 NOT FOUND <br />
-
-* **Notes:**
-
-    None
-
-</details>
-
-**Get Clients**
-----
-Returns json data about clients.\
-Возвращает json с данными о клиентах.
-
-<details>
-
-* **URL**
-
-    /clients
-
-* **Method:**
-
-    `GET`
-
-* **Headers:**
-    
-    `'Authorization': 'Bearer [access-token]'`
-
-    Is inserted into requests automatically by an axios interceptor.\
-    Вставляется в запросы автоматически.
-
-*  **URL Params**
-
-    None
-
-* **Query Params**
-
-    **Optional:**
-
-    None
-
-* **Data Params**
-
-    None
-
-* **Success Response:**
-
-  * **Code:** 200 OK <br />
-    **Content:** 
-    ```json
-      [
-        {
-          "firstName": "CBBbb",
-          "patronymic": "CBB",
-          "surname": "CBB",
-          "birthday": "1990-02-28",
-          "mail": "cbb@gmail.com",
-          "phone": [
-              "+777"
-          ],
-          "_id": "63e7e5c3d46c32fcbf7891fa",
-          "companyName": "CB",
-          "companyId": "63e3e28f3bf7fbab6532f051",
-          "users": [
-              {
-                  "data": {
-                      "surname": "C",
-                      "mail": "c@gmail.com"
-                  },
-                  "_id": "63e37f79609334e79cd043d9",
-                  "id": "63e37f79609334e79cd043d9"
-              },
-              {
-                  "data": {
-                      "surname": "D",
-                      "mail": "d@gmail.com"
-                  },
-                  "_id": "63e37fa2609334e79cd043dc",
-                  "id": "63e37fa2609334e79cd043dc"
-              }
-          ]
-        }
-      ]
-    ```
- 
-* **Error Response:**
-
-    None
 
 * **Notes:**
 

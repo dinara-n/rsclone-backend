@@ -133,27 +133,37 @@ class TodosService {
       const todos = todosFormDB.map((todo) => {
         const start = new Date(todo.data.startTime).getTime();
         const end = new Date(todo.data.endTime).getTime();
-        return { data: todo.data, isDone: todo.isDone, start, end, users: todo.users, company: todo.company };
+        // return { data: todo.data, isDone: todo.isDone, start, end, users: todo.users, company: todo.company };
+        return { _id: todo._id, start, end };
+      });
+
+      const sortedTodos = todos.sort((a, b) => {
+        if (a.start === b.start) {
+          return a.end - b.end;
+        }
+        return a.start - b.start;
       });
 
       const columns = [];
       let columnsNumber = 0;
+      let maxColumnsNumber = 0;
 
-      todos.forEach((todo) => {
+      sortedTodos.forEach((todo) => {
+        const prevTodosComplete = columns.length && columns.every((item) => item.end <= todo.start);
+        if (prevTodosComplete) {
+          columns.length = 0;
+          columnsNumber = 1;
+          columns.push({ end: todo.end, column: columnsNumber });
+          todo.column = columnsNumber;
+          return;
+        }
+
         columns.sort((a, b) => {
           if (a.end !== b.end) {
             return a.end - b.end;
           }
           return a.column - b.column;
         });
-
-        const prevTodosComplete = columns.length && columns.every((item) => item.end <= todo.start);
-        if (prevTodosComplete) {
-          const firstColumnIndex = columns.findIndex((item) => item.column === 1);
-          columns[firstColumnIndex].end = todo.end;
-          todo.column = 1;
-          return;
-        }
 
         const freeColumnIndex = columns.findIndex((item) => item.end <= todo.start);
         if (freeColumnIndex !== -1) {
@@ -162,12 +172,13 @@ class TodosService {
           return;
         } else {
           columnsNumber += 1;
+          maxColumnsNumber = (columnsNumber > maxColumnsNumber) ? columnsNumber : maxColumnsNumber;
           columns.push({ end: todo.end, column: columnsNumber });
           todo.column = columnsNumber;
           return;
         }
       });
-      return { todos, columnsNumber };
+      return { todos: todosFormDB, todosPlacement: sortedTodos, columnsNumber: maxColumnsNumber };
     }
 
     const todos = await Todo.find({}, { data: 1, isDone: 1 })
