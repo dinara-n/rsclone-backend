@@ -50,7 +50,8 @@ class ClientsController {
 
   async getClients(req, res, next) {
     try {
-      const companies = await clientsService.getClients();
+      const { _id, role } = req.user;
+      const companies = await clientsService.getClients(_id, role);
       res.json(companies);
     } catch (err) {
       console.log(err);

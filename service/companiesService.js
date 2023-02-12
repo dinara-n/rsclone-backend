@@ -104,11 +104,15 @@ class CompaniesService {
     return { undeleteCompany };
   }
 
-  async getCompanies(queryArchived) {
+  async getCompanies(queryArchived, _id, role) {
     const archived = (queryArchived === 'true') ? true : false;
-    const companies = await Company.find({ archived }, { archived: 0 })
+    const companies = (role === 'admin' || role === 'manager')
+      ? await Company.find({ archived }, { archived: 0 })
+        .populate({ path: 'users', select: 'data.surname data.mail role' })
+        .populate('todos')
+      : await Company.find({ users: _id, archived }, { archived: 0 })
       .populate({ path: 'users', select: 'data.surname data.mail role' })
-      .populate('todos');
+      .populate({ path: 'todos' });
     return companies;
   }
 

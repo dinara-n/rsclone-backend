@@ -65,7 +65,8 @@ class CompaniesController {
   async getCompanies(req, res, next) {
     try {
       const archived = req.query.archived;
-      const companies = await companiesService.getCompanies(archived);
+      const { _id, role } = req.user;
+      const companies = await companiesService.getCompanies(archived, _id, role);
       res.json(companies);
     } catch (err) {
       console.log(err);

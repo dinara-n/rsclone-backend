@@ -109,8 +109,19 @@ class UsersService {
   }
 
   async getProfile(id) {
-    const users = await User.findById(id, { "archived": 0 });
-    return users;
+    const user = await User.findById(id, { "archived": 0 });
+    return { profileData: {
+      data: {
+        firstName: user.data.firstName,
+        patronymic: user.data.patronymic,
+        surname: user.data.surname,
+        birthday: user.data.birthday,
+        mail: user.data.mail,
+        phone: user.data.phone,
+      },
+      _id: user._id,
+      role: user.role,
+    } };
   }
 
   async updateProfile(user, id, confirmedRole) {

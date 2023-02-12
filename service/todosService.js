@@ -4,6 +4,7 @@ import tokenService from "./tokenService.js";
 import { AuthDto } from "../dtos/authDto.js";
 import ApiError from "../errors/apiError.js";
 import Todo from "../models/Todo.js";
+import { ObjectId } from "mongodb";
 
 class TodosService {
 
@@ -71,7 +72,7 @@ class TodosService {
   //   return { deletedTodo };
   // }
 
-  async getTodos(queryParams) {
+  async getTodos(queryParams, _id, role) {
     let [ year, month, day ] = queryParams.date ? queryParams.date.split('-') : '';
 
     if (month && !(month > 0 && month <= 12) || year && isNaN(year)) {
@@ -87,10 +88,16 @@ class TodosService {
       const dayToday = now.getDate();
       const monthToday = now.getMonth() + 1;
       const yearToday = now.getFullYear();
-      const todos = await Todo.aggregate([
-        { $match: { 'extra.year': year, 'extra.month': month } },
-        { $group: {_id: { day: '$extra.day', isDone: '$isDone' }, count: { $sum: 1 } } },
-      ]);
+      const todos = (role === 'admin' || role === 'manager')
+        ? await Todo.aggregate([
+          { $match: { 'extra.year': year, 'extra.month': month } },
+          { $group: {_id: { day: '$extra.day', isDone: '$isDone' }, count: { $sum: 1 } } },
+        ])
+        : await Todo.aggregate([
+          { $match: { 'users': new ObjectId(_id), 'extra.year': year, 'extra.month': month } },
+          { $group: {_id: { day: '$extra.day', isDone: '$isDone' }, count: { $sum: 1 } } },
+        ]);
+      console.log(todos);
       const daysInMonth = new Date(year, month, 0).getDate();
       const todosByDays = Array(daysInMonth).fill().map((_) => {
         return { complete: 0, future: 0, missed: 0 };
@@ -126,9 +133,13 @@ class TodosService {
         month = (now.getMonth() + 1).toString().padStart(2, '0');
       }
 
-      const todosFormDB = await Todo.find({ 'extra.day': day, 'extra.month': month, 'extra.year': year }, { data: 1, isDone: 1 })
-        .populate({ path: 'users', select: 'data.surname data.mail role' })
-        .populate({ path: 'company', select: 'data.companyName contacts.workers.firstName contacts.workers.patronymic contacts.workers.surname contacts.workers._id' });
+      const todosFormDB = (role === 'admin' || role === 'manager')
+        ? await Todo.find({ 'extra.day': day, 'extra.month': month, 'extra.year': year }, { data: 1, isDone: 1 })
+          .populate({ path: 'users', select: 'data.surname data.mail role' })
+          .populate({ path: 'company', select: 'data.companyName contacts.workers.firstName contacts.workers.patronymic contacts.workers.surname contacts.workers._id' })
+        : await Todo.find({ 'users': _id, 'extra.day': day, 'extra.month': month, 'extra.year': year }, { data: 1, isDone: 1 })
+          .populate({ path: 'users', select: 'data.surname data.mail role' })
+          .populate({ path: 'company', select: 'data.companyName contacts.workers.firstName contacts.workers.patronymic contacts.workers.surname contacts.workers._id' });
 
       const todos = todosFormDB.map((todo) => {
         const start = new Date(todo.data.startTime).getTime();
@@ -181,9 +192,13 @@ class TodosService {
       return { todos: todosFormDB, todosPlacement: sortedTodos, columnsNumber: maxColumnsNumber };
     }
 
-    const todos = await Todo.find({}, { data: 1, isDone: 1 })
-    .populate({ path: 'users', select: 'data.surname data.mail role' })
-    .populate({ path: 'company', select: 'data.companyName contacts.workers.firstName contacts.workers.patronymic contacts.workers.surname' });
+    const todos = (role === 'admin' || role === 'manager')
+      ? await Todo.find({}, { data: 1, isDone: 1 })
+        .populate({ path: 'users', select: 'data.surname data.mail role' })
+        .populate({ path: 'company', select: 'data.companyName contacts.workers.firstName contacts.workers.patronymic contacts.workers.surname' })
+      : await Todo.find({ users: _id }, { data: 1, isDone: 1 })
+        .populate({ path: 'users', select: 'data.surname data.mail role' })
+        .populate({ path: 'company', select: 'data.companyName contacts.workers.firstName contacts.workers.patronymic contacts.workers.surname' });
     return todos;
   }
 }

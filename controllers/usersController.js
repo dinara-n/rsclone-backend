@@ -76,8 +76,8 @@ class UsersController {
 
   async getProfile(req, res, next) {
     try {
-
-      const users = await usersService.getProfile(confirmedRole);
+      const { _id } = req.user;
+      const users = await usersService.getProfile(_id);
       res.json(users);
     } catch (err) {
       console.log(err);
@@ -89,9 +89,9 @@ class UsersController {
     try {
       handleValidationErrors(req, next, 'Update error');
       const user = req.body;
-      const id = req.params.id;
-
-      const userData = await usersService.updateProfile(user, id, confirmedRole);
+      // const id = req.params.id;
+      const { _id, role } = req.user;
+      const userData = await usersService.updateProfile(user, _id, role);
       return res.json(userData);
     } catch (err) {
       console.log('err');

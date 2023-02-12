@@ -53,7 +53,8 @@ class TodosController {
   async getTodos(req, res, next) {
     try {
       const queryParams = req.query;
-      const todos = await todosService.getTodos(queryParams);
+      const { _id, role } = req.user;
+      const todos = await todosService.getTodos(queryParams, _id, role);
       res.json(todos);
     } catch (err) {
       console.log(err);
