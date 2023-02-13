@@ -3,7 +3,7 @@ import { Schema, model } from "mongoose";
 const User = new Schema({
   data: {
     firstName: { type: String, unique: false, required: true },
-    patronymic: { type: String, unique: false, required: true },
+    patronymic: { type: String, unique: false, required: false },
     surname: { type: String, unique: false, required: true },
     birthday: { type: String, unique: false, required: true },
     mail: { type: String, unique: true, required: true },
@@ -21,7 +21,7 @@ const User = new Schema({
 {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
-});
+});z
 
 User.virtual('companies', {
   ref: 'Company',

@@ -135,11 +135,11 @@ class TodosService {
 
       const todosFormDB = (role === 'admin' || role === 'manager')
         ? await Todo.find({ 'extra.day': day, 'extra.month': month, 'extra.year': year }, { data: 1, isDone: 1 })
-          .populate({ path: 'users', select: 'data.surname data.mail role' })
-          .populate({ path: 'company', select: 'data.companyName contacts.workers.firstName contacts.workers.patronymic contacts.workers.surname contacts.workers._id' })
+          .populate({ path: 'users', select: 'data.surname data.mail role archived' })
+          .populate({ path: 'company', select: 'data.companyName contacts.workers.firstName contacts.workers.patronymic contacts.workers.surname contacts.workers._id archived' })
         : await Todo.find({ 'users': _id, 'extra.day': day, 'extra.month': month, 'extra.year': year }, { data: 1, isDone: 1 })
-          .populate({ path: 'users', select: 'data.surname data.mail role' })
-          .populate({ path: 'company', select: 'data.companyName contacts.workers.firstName contacts.workers.patronymic contacts.workers.surname contacts.workers._id' });
+          .populate({ path: 'users', select: 'data.surname data.mail role archived' })
+          .populate({ path: 'company', select: 'data.companyName contacts.workers.firstName contacts.workers.patronymic contacts.workers.surname contacts.workers._id archived' });
 
       const todos = todosFormDB.map((todo) => {
         const start = new Date(todo.data.startTime).getTime();
@@ -194,11 +194,11 @@ class TodosService {
 
     const todos = (role === 'admin' || role === 'manager')
       ? await Todo.find({}, { data: 1, isDone: 1 })
-        .populate({ path: 'users', select: 'data.surname data.mail role' })
-        .populate({ path: 'company', select: 'data.companyName contacts.workers.firstName contacts.workers.patronymic contacts.workers.surname' })
+        .populate({ path: 'users', select: 'data.surname data.mail role archived' })
+        .populate({ path: 'company', select: 'data.companyName contacts.workers.firstName contacts.workers.patronymic contacts.workers.surname archived' })
       : await Todo.find({ users: _id }, { data: 1, isDone: 1 })
-        .populate({ path: 'users', select: 'data.surname data.mail role' })
-        .populate({ path: 'company', select: 'data.companyName contacts.workers.firstName contacts.workers.patronymic contacts.workers.surname' });
+        .populate({ path: 'users', select: 'data.surname data.mail role archived' })
+        .populate({ path: 'company', select: 'data.companyName contacts.workers.firstName contacts.workers.patronymic contacts.workers.surname archived' });
     return todos;
   }
 }

@@ -14,7 +14,7 @@ router.post('/users', [
   body('data.mail', 'Email must be correct email type').isEmail(),
   body('data.password', 'Password must have 8 symbols or more').isLength({ min: 8 }),
   body('data.firstName', 'Name is required').notEmpty(),
-  body('data.patronymic', 'Patronymic is required').notEmpty(),
+  // body('data.patronymic', 'Patronymic is required').notEmpty(),
   body('data.surname', 'Surname is required').notEmpty(),
   body('data.birthday', 'Birthday is required').notEmpty(),
   body('data.phone', 'Phone is required').notEmpty(),

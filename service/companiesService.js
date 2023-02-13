@@ -108,10 +108,10 @@ class CompaniesService {
     const archived = (queryArchived === 'true') ? true : false;
     const companies = (role === 'admin' || role === 'manager')
       ? await Company.find({ archived }, { archived: 0 })
-        .populate({ path: 'users', select: 'data.surname data.mail role' })
+        .populate({ path: 'users', select: 'data.surname data.mail role', match: { archived: false } })
         .populate('todos')
       : await Company.find({ users: _id, archived }, { archived: 0 })
-      .populate({ path: 'users', select: 'data.surname data.mail role' })
+      .populate({ path: 'users', select: 'data.surname data.mail role', match: { archived: false } })
       .populate({ path: 'todos' });
     return companies;
   }

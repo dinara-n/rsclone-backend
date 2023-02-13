@@ -68,9 +68,9 @@ class ClientsService {
   async getClients(_id, role) {
     const companies = (role === 'admin' || role === 'manager')
       ? await Company.find({ archived: false }, { archived: 0 })
-        .populate({ path: 'users', select: 'data.surname data.mail' })
+        .populate({ path: 'users', select: 'data.surname data.mail', match: { archived: false } })
       : await Company.find({ users: _id, archived: false }, { archived: 0 })
-        .populate({ path: 'users', select: 'data.surname data.mail' });
+        .populate({ path: 'users', select: 'data.surname data.mail', match: { archived: false } });
 
     const clients = [];
     companies.forEach((company) => {

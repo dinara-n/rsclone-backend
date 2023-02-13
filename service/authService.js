@@ -8,11 +8,11 @@ class AuthService {
 
   async login(mail, password, oldRefreshToken) {
     console.log(oldRefreshToken);
-    const user = await User.findOne({ 'data.mail': mail });
+    const user = await User.findOne({ 'data.mail': mail, archived: false });
     if (!user) {
-      throw ApiError.BadRequest('User with such email was not found');
+      throw ApiError.NotFoundError('User with such email was not found');
     }
-    const passwordIsValid = bcrypt.compare(password, user.data.password);
+    const passwordIsValid = await bcrypt.compare(password, user.data.password);
     if (!passwordIsValid) {
       throw ApiError.BadRequest('Incorrect password');
     }
