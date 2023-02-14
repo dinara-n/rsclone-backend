@@ -159,9 +159,9 @@ class TodosService {
         }
 
         columns.sort((a, b) => {
-          if (a.end !== b.end) {
-            return a.end - b.end;
-          }
+          // if (a.end !== b.end) {
+          //   return a.end - b.end;
+          // }
           return a.column - b.column;
         });
 
@@ -178,7 +178,33 @@ class TodosService {
           return;
         }
       });
-      return { todos: todosFormDB, todosPlacement: sortedTodos, columnsNumber: maxColumnsNumber };
+
+      const handleTodosArea = (todos) => {
+        let currentArray = 0;
+        const result = [];
+        const todosLength = todos.length;
+        todos.forEach((todo, index) => {
+          const nextTodo = todos[index + 1];
+          if (nextTodo && index > 0) {
+            if (todo.column < nextTodo.column) {
+              result[currentArray].push(todo);
+            } else {
+              result[currentArray].push(todo);
+              result.push([]);
+              currentArray += 1;
+            }
+          } else {
+            result.push([todo]);
+          }
+          if (!nextTodo && index < todosLength - 1) {
+            result[currentArray].push(todo);
+          }
+        });
+        return result;
+      };
+      const todosPlacement = handleTodosArea(sortedTodos);
+      console.log(todosPlacement);
+      return { todos: todosFormDB, todosPlacement, columnsNumber: maxColumnsNumber };
     }
 
     const todos = await Todo.find({}, { data: 1, isDone: 1 })
