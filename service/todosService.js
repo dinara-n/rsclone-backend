@@ -179,29 +179,27 @@ class TodosService {
         }
       });
 
-      const handleTodosArea = (todos) => {
-        let currentArray = 0;
-        const result = [];
-        const todosLength = todos.length;
-        todos.forEach((todo, index) => {
-          const nextTodo = todos[index + 1];
-          if (nextTodo && index > 0) {
-            if (todo.column < nextTodo.column) {
-              result[currentArray].push(todo);
-            } else {
-              result[currentArray].push(todo);
-              result.push([]);
-              currentArray += 1;
-            }
-          } else {
-            result.push([todo]);
-          }
-          if (!nextTodo && index < todosLength - 1) {
-            result[currentArray].push(todo);
-          }
-        });
-        return result;
-      };
+const handleTodosArea = (todos) => {
+  let currentArray = 0;
+  const result = [];
+  todos.forEach((todo, index) => {
+    const nextTodo = todos[index + 1];
+    if (nextTodo && index > 0) {
+      if (todo.column < nextTodo.column) {
+        result[currentArray].push(todo);
+      } else {
+        result[currentArray].push(todo);
+        result.push([]);
+        currentArray += 1;
+      }
+    } else if (!nextTodo) {
+      result[currentArray].push(todo);
+    } else {
+      result.push([todo]);
+    }
+  });
+  return result;
+};
       const todosPlacement = handleTodosArea(sortedTodos);
       console.log(todosPlacement);
       return { todos: todosFormDB, todosPlacement, columnsNumber: maxColumnsNumber };
