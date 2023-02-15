@@ -18,7 +18,8 @@ class CompaniesController {
     try {
       handleValidationErrors(req, next, 'Error while adding company');
       const company = req.body;
-      const companyData = await companiesService.addCompany(company);
+      const userId = req.user?.id || null;
+      const companyData = await companiesService.addCompany(company, userId);
       return res.json(companyData);
     } catch (err) {
       console.log('err');
@@ -68,9 +69,11 @@ class CompaniesController {
       const { _id, role } = req.user;
       const companies = await companiesService.getCompanies(archived, _id, role);
       res.json(companies);
+      // res.status(200).json(companies);
     } catch (err) {
       console.log(err);
       next(err);
+      // res.status(err.statusCode).json(err);
     }
   }
   

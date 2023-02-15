@@ -67,10 +67,12 @@ class UsersController {
     try {
       const archived = req.query.archived;
       const users = await usersService.getUsers(archived);
-      res.json(users);
+      // res.json(users);
+      res.status(200).json(users);
     } catch (err) {
       console.log(err);
-      next(err);
+      // next(err);
+      res.status(err.statusCode).json(err);
     }
   }
 

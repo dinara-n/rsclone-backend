@@ -22,7 +22,7 @@ const validateMail = async (mail) => {
 
 class CompaniesService {
 
-  async addCompany(company) {
+  async addCompany(company, userId) {
 
     if (!company?.contacts?.commonPhone && !company?.contacts?.commonMail) {
       throw ApiError.BadRequest('Company must have a phone or an email');
@@ -39,6 +39,9 @@ class CompaniesService {
     // if (users.length === 0 || !hasActiveUsers) {
     //   throw ApiError.BadRequest('No active users specified');
     // }
+    if (!company.users) {
+      company.users = [userId];
+    }
 
     const companyData = await Company.create({ ...company, archived: false });
     return { newCompany: companyData };

@@ -21,7 +21,7 @@ const User = new Schema({
 {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
-});z
+});
 
 User.virtual('companies', {
   ref: 'Company',

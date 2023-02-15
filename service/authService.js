@@ -20,7 +20,18 @@ class AuthService {
     const tokens = await tokenService.generateTokens({ ...authDto });
     await tokenService.updateToken(authDto._id, tokens.refreshToken, oldRefreshToken);
     console.log(tokens);
-    return { ...tokens, user: authDto };
+    return { ...tokens, user: {
+      data: {
+        firstName: user.data.firstName,
+        patronymic: user.data.patronymic,
+        surname: user.data.surname,
+        birthday: user.data.birthday,
+        mail: user.data.mail,
+        phone: user.data.phone,
+      },
+      role: user.role,
+      _id: user._id,
+    } };
   }
 
   async logout(refreshToken) {
@@ -41,7 +52,18 @@ class AuthService {
     const authDto = new AuthDto(user);
     const tokens = await tokenService.generateTokens({ ...authDto });
     await tokenService.updateToken(authDto._id, tokens.refreshToken, refreshToken);
-    return { ...tokens, user: authDto };
+    return { ...tokens, user: {
+      data: {
+        firstName: user.data.firstName,
+        patronymic: user.data.patronymic,
+        surname: user.data.surname,
+        birthday: user.data.birthday,
+        mail: user.data.mail,
+        phone: user.data.phone,
+      },
+      role: user.role,
+      _id: user._id,
+    }};
   }
 }
 
