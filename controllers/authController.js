@@ -20,7 +20,7 @@ class AuthController {
       const oldRefreshToken = req.cookies.refreshToken;
       console.log(oldRefreshToken);
       const userData = await authService.login(mail, password, oldRefreshToken);
-      res.cookie('refreshToken', userData.refreshToken, { maxAge: fifteenDaysInMs, httpOnly: true });
+      res.cookie('refreshToken', userData.refreshToken, { maxAge: fifteenDaysInMs, httpOnly: true, sameSite: 'none', secure: true });
       return res.json(userData);
     } catch (err) {
       console.log(err);
@@ -45,7 +45,7 @@ class AuthController {
     try {
       const { refreshToken } = req.cookies;
       const userData = await authService.refresh(refreshToken);
-      res.cookie('refreshToken', userData.refreshToken, { maxAge: fifteenDaysInMs, httpOnly: true });
+      res.cookie('refreshToken', userData.refreshToken, { maxAge: fifteenDaysInMs, httpOnly: true, sameSite: 'none', secure: true });
       return res.json(userData);
     } catch (err) {
       console.log(err);
