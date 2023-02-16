@@ -18,7 +18,7 @@ class UsersController {
       handleValidationErrors(req, next, 'Registration error');
       const user = req.body;
       const userData = await usersService.addUser(user);
-      return res.json(userData);
+      return res.status(201).json(userData);
     } catch (err) {
       console.log('err');
       next(err);

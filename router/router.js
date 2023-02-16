@@ -42,7 +42,7 @@ router.get('/auth/refresh', authController.refresh);
 
 router.post('/companies', authMiddleware(), [
   body('data.companyName', 'Company name is required').notEmpty(),
-  body('data.commonPhone', 'Phone is required').notEmpty(),
+  // body('data.commonPhone', 'Phone is required').notEmpty(),
   // body('contacts.commonPhone', 'Company phones should be passed as an array').isArray(),
   // body('contacts.workers', 'Contacts should be passed as an array').isArray(),
   // body('contacts.workers.*.phone', 'Contacts\' phones should be passed as an array').isArray(),
@@ -56,10 +56,10 @@ router.patch('/companies/archived/:id', authMiddleware(), roleMiddleware(['admin
 
 router.get('/companies', authMiddleware(), companiesController.getCompanies);
 
-router.post('/clients', authMiddleware(), clientsController.addClient);
-router.patch('/clients/:id', authMiddleware(), clientsController.updateClient);
-router.delete('/clients/:id', authMiddleware(), clientsController.deleteClient);
-router.get('/clients', authMiddleware(), clientsController.getClients);
+router.post('/contacts', authMiddleware(), clientsController.addClient);
+router.patch('/contacts/:id', authMiddleware(), clientsController.updateClient);
+router.delete('/contacts/:id', authMiddleware(), clientsController.deleteClient);
+router.get('/contacts', authMiddleware(), clientsController.getClients);
 
 router.post('/todos', authMiddleware(), [
   body('data.type', 'Todo type is required').notEmpty(),

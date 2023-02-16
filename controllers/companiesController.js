@@ -20,7 +20,7 @@ class CompaniesController {
       const company = req.body;
       const userId = req.user?.id || null;
       const companyData = await companiesService.addCompany(company, userId);
-      return res.json(companyData);
+      return res.status(201).json(companyData);
     } catch (err) {
       console.log('err');
       next(err);
@@ -69,11 +69,9 @@ class CompaniesController {
       const { _id, role } = req.user;
       const companies = await companiesService.getCompanies(archived, _id, role);
       res.json(companies);
-      // res.status(200).json(companies);
     } catch (err) {
       console.log(err);
       next(err);
-      // res.status(err.statusCode).json(err);
     }
   }
   

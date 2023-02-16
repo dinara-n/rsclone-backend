@@ -15,7 +15,7 @@ class TodosController {
       }
       const todo = req.body;
       const todoData = await todosService.addTodo(todo);
-      return res.json(todoData);
+      return res.status(201).json(todoData);
     } catch (err) {
       console.log('err');
       next(err);

@@ -23,6 +23,9 @@ import Todo from "../models/Todo.js";
 class ClientsService {
 
   async addClient(client, companyId) {
+    if (!client) {
+      throw ApiError.NotFoundError('No new contact to add');
+    }
     const company = await Company.findById(companyId);
     if (!company) {
       throw ApiError.NotFoundError('Company not found');
@@ -33,10 +36,11 @@ class ClientsService {
   }
 
   async updateClient(client, id) {
-    const company = await Company.findOne({ 'contacts.workers.*._id': id });
+    const company = await Company.findOne({ 'contacts.workers._id': id });
     if (!company) {
-      throw ApiError.NotFoundError('Client not found');
+      throw ApiError.NotFoundError('Contact not found');
     }
+    console.log(company.contacts.workers);
     const worker = company.contacts.workers.filter((worker) => worker._id.toString() === id)[0];
     const updatedWorker = {
       firstName: worker.firstName,
@@ -55,7 +59,7 @@ class ClientsService {
   }
 
   async deleteClient(id) {
-    const company = await Company.findOne({ 'contacts.workers.*._id': id });
+    const company = await Company.findOne({ 'contacts.workers._id': id });
     if (!company) {
       throw ApiError.NotFoundError('Client not found');
     }

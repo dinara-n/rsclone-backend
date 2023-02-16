@@ -31,6 +31,7 @@ class AuthService {
       },
       role: user.role,
       _id: user._id,
+      settings: user.settings,
     } };
   }
 
@@ -63,6 +64,7 @@ class AuthService {
       },
       role: user.role,
       _id: user._id,
+      settings: user.settings,
     }};
   }
 }

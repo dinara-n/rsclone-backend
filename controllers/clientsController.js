@@ -16,9 +16,9 @@ class ClientsController {
 
   async addClient(req, res, next) {
     try {
-      const { client, companyId } = req.body;
-      const companyData = await clientsService.addClient(client, companyId);
-      return res.json(companyData);
+      const { contact, companyId } = req.body;
+      const companyData = await clientsService.addClient(contact, companyId);
+      return res.status(201).json(companyData);
     } catch (err) {
       console.log('err');
       next(err);
@@ -27,9 +27,9 @@ class ClientsController {
 
   async updateClient(req, res, next) {
     try {
-      const client = req.body;
+      const contact = req.body;
       const id = req.params.id;
-      const companyData = await clientsService.updateClient(client, id);
+      const companyData = await clientsService.updateClient(contact, id);
       return res.json(companyData);
     } catch (err) {
       console.log('err');
