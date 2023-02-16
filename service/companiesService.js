@@ -47,7 +47,7 @@ class CompaniesService {
     return { newCompany: companyData };
   }
 
-  async updateCompany(company, id) {
+  async updateCompany(company, id, userRole) {
     const { data, contacts, users } = company;
 
     let updateTodos = false;
@@ -76,6 +76,9 @@ class CompaniesService {
       if (worker?.phone) oldCompany.contacts.workers[index].phone = worker.phone;
     });
     if (users) {
+      if (!['admin', 'manager'].includes(userRole)) {
+        throw ApiError.ForbiddenError('Salesman cannot assign users to companies');
+      }
       oldCompany.users = users;
       updateTodos = true;
     }
