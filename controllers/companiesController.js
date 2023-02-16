@@ -32,7 +32,8 @@ class CompaniesController {
       handleValidationErrors(req, next, 'Error while updating company');
       const company = req.body;
       const id = req.params.id;
-      const companyData = await companiesService.updateCompany(company, id);
+      const { role } = req.user;
+      const companyData = await companiesService.updateCompany(company, id, role);
       return res.json(companyData);
     } catch (err) {
       console.log('err');
