@@ -13,14 +13,14 @@ export default class ApiError extends Error {
   }
 
   static UnauthorizedError(message) {
-    return new ApiError(401, 'Unauthorized: User is not authorized', message);
+    return new ApiError(401, message);
   }
 
   static ForbiddenError(message) {
-    return new ApiError(403, 'Forbidden: User is not allowed to perform that action', message);
+    return new ApiError(403, message);
   }
 
   static NotFoundError(message) {
-    return new ApiError(404, 'Not found: the requested resource is not found', message);
+    return new ApiError(404, message);
   }
 }

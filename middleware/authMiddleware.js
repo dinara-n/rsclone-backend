@@ -1,20 +1,27 @@
 import jwt from "jsonwebtoken";
-import secretAccessKey from "../config.js";
+import ApiError from "../errors/apiError.js";
+import tokenService from "../service/tokenService.js";
 
-export default function (req, res, next) {
-  if (req.method === 'OPTIONS') {
-    next();
-  }
-  try {
-    const [, token] = req.headers.authorization.split(' ');
-    if (!token) {
-      return res.status(403).json({ message: 'User is not authentificated' });
+export default function () {
+  return async function (req, res, next) {
+    if (req.method === 'OPTIONS') {
+      next();
     }
-    const decodedData = jwt.verify(token, secretAccessKey);
-    req.user = decodedData;
-    next();
-  } catch (err) {
-    console.log(err);
-    return res.status(403).json({ message: 'User is not authorized' });
+    try {
+      const [, token] = req.headers.authorization.split(' ');
+      if (!token) {
+        return next(ApiError.UnauthorizedError('User is not authentificated'));
+      }
+      const decodedData = tokenService.validateToken(token, 'accessToken');
+      console.log(decodedData);
+      if (!decodedData) {
+        return next(ApiError.UnauthorizedError('User is not authentificated'));
+      }
+      req.user = decodedData;
+      next();
+    } catch (err) {
+      console.log(err);
+      return next(ApiError.UnauthorizedError('User is not authorized'));
+    }
   }
 };

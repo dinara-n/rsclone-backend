@@ -35,7 +35,8 @@ class UsersService {
 
   async updateUser(user, id) {
     const { data, role, settings } = user;
-    const { mail, password } = data;
+    const mail = data?.mail ?? undefined;
+    const password = data?.password ?? undefined;
 
     const oldUser = await User.findById(id);
     if (!oldUser) {
@@ -103,19 +104,32 @@ class UsersService {
     const archived = (queryArchived === 'true') ? true : false;
     const users = await User
       .find({ archived }, { "data.firstName": 1, "data.patronymic": 1, "data.surname": 1, "data.birthday": 1, "data.mail": 1, "data.phone": 1, "role": 1 })
-      .populate('companies')
-      .populate('todos');
+      .populate({ path: 'companies', select: '_id users data.companyName workers.*.firstName workers.*.surname workers.*._id' })
+      .populate({ path: 'todos', select: '_id isDone company users data extra' });
     return users;
   }
 
   async getProfile(id) {
-    const users = await User.findById(id, { "archived": 0 });
-    return users;
+    const user = await User.findById(id, { "archived": 0 });
+    return {
+      data: {
+        firstName: user.data.firstName,
+        patronymic: user.data.patronymic,
+        surname: user.data.surname,
+        birthday: user.data.birthday,
+        mail: user.data.mail,
+        phone: user.data.phone,
+      },
+      _id: user._id,
+      role: user.role,
+      settings: user.settings,
+    };
   }
 
   async updateProfile(user, id, confirmedRole) {
     const { data, role, settings } = user;
-    const { mail, password } = data;
+    const mail = data?.mail ?? undefined;
+    const password = data?.password ?? undefined;
 
     if (confirmedRole === 'salesman' && (role || data?.firstName || data?.patronymic || data?.surname || data?.birthday)) {
       throw ApiError.BadRequest('Salesman is only allowed to change email, phone, password, language');
@@ -146,7 +160,7 @@ class UsersService {
       }
       oldUser.role = role;
     }
-    if (settings?.language) oldUser.settings.language = data.settings.language;
+    if (settings?.language) oldUser.settings.language = settings.language;
     
     await oldUser.save();
     return { updatedData: user };

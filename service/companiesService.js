@@ -22,7 +22,7 @@ const validateMail = async (mail) => {
 
 class CompaniesService {
 
-  async addCompany(company) {
+  async addCompany(company, userId) {
 
     if (!company?.contacts?.commonPhone && !company?.contacts?.commonMail) {
       throw ApiError.BadRequest('Company must have a phone or an email');
@@ -39,6 +39,9 @@ class CompaniesService {
     // if (users.length === 0 || !hasActiveUsers) {
     //   throw ApiError.BadRequest('No active users specified');
     // }
+    if (!company.users) {
+      company.users = [userId];
+    }
 
     const companyData = await Company.create({ ...company, archived: false });
     return { newCompany: companyData };
@@ -104,11 +107,15 @@ class CompaniesService {
     return { undeleteCompany };
   }
 
-  async getCompanies(queryArchived) {
+  async getCompanies(queryArchived, _id, role) {
     const archived = (queryArchived === 'true') ? true : false;
-    const companies = await Company.find({ archived }, { archived: 0 })
-      .populate({ path: 'users', select: 'data.surname data.mail role' })
-      .populate('todos');
+    const companies = (role === 'admin' || role === 'manager')
+      ? await Company.find({ archived }, { archived: 0 })
+        .populate({ path: 'users', select: 'data.surname data.mail role', match: { archived: false } })
+        .populate('todos')
+      : await Company.find({ users: _id, archived }, { archived: 0 })
+      .populate({ path: 'users', select: 'data.surname data.mail role', match: { archived: false } })
+      .populate({ path: 'todos' });
     return companies;
   }
 

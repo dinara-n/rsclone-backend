@@ -8,11 +8,11 @@ class AuthService {
 
   async login(mail, password, oldRefreshToken) {
     console.log(oldRefreshToken);
-    const user = await User.findOne({ 'data.mail': mail });
+    const user = await User.findOne({ 'data.mail': mail, archived: false });
     if (!user) {
-      throw ApiError.BadRequest('User with such email was not found');
+      throw ApiError.NotFoundError('User with such email was not found');
     }
-    const passwordIsValid = bcrypt.compare(password, user.data.password);
+    const passwordIsValid = await bcrypt.compare(password, user.data.password);
     if (!passwordIsValid) {
       throw ApiError.BadRequest('Incorrect password');
     }
@@ -20,7 +20,19 @@ class AuthService {
     const tokens = await tokenService.generateTokens({ ...authDto });
     await tokenService.updateToken(authDto._id, tokens.refreshToken, oldRefreshToken);
     console.log(tokens);
-    return { ...tokens, user: authDto };
+    return { ...tokens, user: {
+      data: {
+        firstName: user.data.firstName,
+        patronymic: user.data.patronymic,
+        surname: user.data.surname,
+        birthday: user.data.birthday,
+        mail: user.data.mail,
+        phone: user.data.phone,
+      },
+      role: user.role,
+      _id: user._id,
+      settings: user.settings,
+    } };
   }
 
   async logout(refreshToken) {
@@ -41,7 +53,19 @@ class AuthService {
     const authDto = new AuthDto(user);
     const tokens = await tokenService.generateTokens({ ...authDto });
     await tokenService.updateToken(authDto._id, tokens.refreshToken, refreshToken);
-    return { ...tokens, user: authDto };
+    return { ...tokens, user: {
+      data: {
+        firstName: user.data.firstName,
+        patronymic: user.data.patronymic,
+        surname: user.data.surname,
+        birthday: user.data.birthday,
+        mail: user.data.mail,
+        phone: user.data.phone,
+      },
+      role: user.role,
+      _id: user._id,
+      settings: user.settings,
+    }};
   }
 }
 

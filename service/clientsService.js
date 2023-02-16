@@ -23,6 +23,9 @@ import Todo from "../models/Todo.js";
 class ClientsService {
 
   async addClient(client, companyId) {
+    if (!client) {
+      throw ApiError.NotFoundError('No new contact to add');
+    }
     const company = await Company.findById(companyId);
     if (!company) {
       throw ApiError.NotFoundError('Company not found');
@@ -33,10 +36,11 @@ class ClientsService {
   }
 
   async updateClient(client, id) {
-    const company = await Company.findOne({ 'contacts.workers.*._id': id });
+    const company = await Company.findOne({ 'contacts.workers._id': id });
     if (!company) {
-      throw ApiError.NotFoundError('Client not found');
+      throw ApiError.NotFoundError('Contact not found');
     }
+    console.log(company.contacts.workers);
     const worker = company.contacts.workers.filter((worker) => worker._id.toString() === id)[0];
     const updatedWorker = {
       firstName: worker.firstName,
@@ -55,7 +59,7 @@ class ClientsService {
   }
 
   async deleteClient(id) {
-    const company = await Company.findOne({ 'contacts.workers.*._id': id });
+    const company = await Company.findOne({ 'contacts.workers._id': id });
     if (!company) {
       throw ApiError.NotFoundError('Client not found');
     }
@@ -65,10 +69,12 @@ class ClientsService {
     return { deletedWorker };
   }
 
-  async getClients() {
-    const companies = await Company.find({ archived: false }, { archived: 0 })
-      .populate({ path: 'users', select: 'data.surname data.mail' })
-      // .populate('todos');
+  async getClients(_id, role) {
+    const companies = (role === 'admin' || role === 'manager')
+      ? await Company.find({ archived: false }, { archived: 0 })
+        .populate({ path: 'users', select: 'data.surname data.mail', match: { archived: false } })
+      : await Company.find({ users: _id, archived: false }, { archived: 0 })
+        .populate({ path: 'users', select: 'data.surname data.mail', match: { archived: false } });
 
     const clients = [];
     companies.forEach((company) => {

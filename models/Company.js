@@ -7,7 +7,7 @@ const Company = new Schema({
     address: { type: String, unique: false, required: false },
   },
   contacts: {
-    commonPhone: [{ type: String, unique: false, required: false }],
+    commonPhone: [{ type: String, unique: false, required: true }],
     commonMail: { type: String, unique: false, required: false },
     workers: [{
       firstName: { type: String, unique: false, required: false },
@@ -18,7 +18,7 @@ const Company = new Schema({
       phone: [{ type: String, unique: false, required: false }],
     }],
   },
-  users: [{ type: Schema.Types.ObjectId, unique: false, required: false, ref: 'User' }],
+  users: [{ type: Schema.Types.ObjectId, unique: false, required: true, ref: 'User' }],
   archived: { type: Boolean, unique: false, required: false },
 },
 {
