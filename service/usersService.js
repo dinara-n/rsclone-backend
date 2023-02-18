@@ -86,6 +86,7 @@ class UsersService {
     if (!deletedUser) {
       throw ApiError.NotFoundError('User not found');
     }
+    await tokenService.deleteUserTokens(id);
     return { deletedUser };
   }
 
