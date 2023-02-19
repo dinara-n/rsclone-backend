@@ -23,7 +23,17 @@ class TokenService {
   }
 
   async deleteToken(refreshToken) {
+    const tokenData = await Token.updateOne({ 'user.refreshTokens': refreshToken }, { $pull: { 'user.refreshTokens': refreshToken } });
+    return tokenData;
+  }
+
+  async deleteTokens(refreshToken) {
     const tokenData = await Token.deleteOne({ 'user.refreshTokens': refreshToken });
+    return tokenData;
+  }
+
+  async deleteUserTokens(id) {
+    const tokenData = await Token.deleteOne({ 'user.userId': id });
     return tokenData;
   }
 

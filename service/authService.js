@@ -35,7 +35,12 @@ class AuthService {
     } };
   }
 
-  async logout(refreshToken) {
+  async logout(refreshToken, queryAll) {
+    const all = (queryAll === 'true') ? true : false;
+    if (all) {
+      const token = await tokenService.deleteTokens(refreshToken);
+      return token;
+    }
     const token = await tokenService.deleteToken(refreshToken);
     return token;
   }
