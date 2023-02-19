@@ -1,13 +1,31 @@
 import { Router } from "express";
 const router = new Router();
+import emitter from "../emitter/emitter.js";
 import authController from "../controllers/authController.js";
 import usersController from "../controllers/usersController.js";
 import companiesController from "../controllers/companiesController.js";
 import clientsController from "../controllers/clientsController.js";
 import todosController from "../controllers/todosController.js";
+import dataController from "../controllers/dataController.js";
 import { body } from "express-validator";
 import authMiddleware from "../middleware/authMiddleware.js";
 import roleMiddleware from "../middleware/roleMiddleware.js";
+import connectMiddleware from "../middleware/connectMiddleware.js";
+
+const sendUpdatedData = (req, res) => {
+  res.writeHead(200, {
+    'Connection': 'keep-alive',
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+  });
+  emitter.on('update', (updatedData) => {
+    res.write(`data: ${updatedData} \n\n`);
+  })
+}
+
+router.get('/connect', connectMiddleware(), sendUpdatedData);
+
+router.get('/all', authMiddleware(), dataController.getData);
 
 router.post('/users', authMiddleware(), roleMiddleware(['admin', 'manager']), [
   body('data.mail', 'Email is required').notEmpty(),

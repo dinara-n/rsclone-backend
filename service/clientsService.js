@@ -31,7 +31,7 @@ class ClientsService {
       throw ApiError.NotFoundError('Company not found');
     }
     company.contacts.workers.push(client);
-    company.save();
+    await company.save();
     return { newClient: client };
   }
 
@@ -54,7 +54,7 @@ class ClientsService {
     };
     company.contacts.workers = company.contacts.workers.filter((worker) => worker._id.toString() !== id);
     company.contacts.workers.push(updatedWorker);
-    company.save();
+    await company.save();
     return { updatedWorker };
   }
 
@@ -65,7 +65,7 @@ class ClientsService {
     }
     const deletedWorker = company.contacts.workers.filter((worker) => worker._id.toString() === id);
     company.contacts.workers = company.contacts.workers.filter((worker) => worker._id.toString() !== id);
-    company.save();
+    await company.save();
     return { deletedWorker };
   }
 
