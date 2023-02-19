@@ -4,6 +4,7 @@
 import { validationResult } from 'express-validator';
 import usersService from "../service/usersService.js";
 import ApiError from "../errors/apiError.js";
+import emitter from '../emitter/emitter.js';
 
 const handleValidationErrors = (req, next, message) => {
   const errors = validationResult(req);
@@ -12,12 +13,23 @@ const handleValidationErrors = (req, next, message) => {
   }
 };
 
+const emitUsersUpdate = async () => {
+  const users = await usersService.getUsers();
+  emitter.emit('update', JSON.stringify({ users }));
+};
+
+const emitProfileUpdate = async (id) => {
+  const profile = await usersService.getProfile(id);
+  emitter.emit('update', JSON.stringify({ profile }));
+};
+
 class UsersController {
   async addUser(req, res, next) {
     try {
       handleValidationErrors(req, next, 'Registration error');
       const user = req.body;
       const userData = await usersService.addUser(user);
+      emitUsersUpdate();
       return res.status(201).json(userData);
     } catch (err) {
       console.log('err');
@@ -31,6 +43,8 @@ class UsersController {
       const user = req.body;
       const id = req.params.id;
       const userData = await usersService.updateUser(user, id);
+      emitUsersUpdate();
+      emitProfileUpdate(id);
       return res.json(userData);
     } catch (err) {
       console.log('err');
@@ -43,6 +57,7 @@ class UsersController {
       handleValidationErrors(req, next, 'Deletion error');
       const id = req.params.id;
       const userData = await usersService.deleteUser(id);
+      emitUsersUpdate();
       return res.json(userData);
     } catch (err) {
       console.log('err');
@@ -56,6 +71,7 @@ class UsersController {
       const id = req.params.id;
       const user = req.body;
       const userData = await usersService.undeleteUser(id, user);
+      emitUsersUpdate();
       return res.json(userData);
     } catch (err) {
       console.log('err');
@@ -94,6 +110,7 @@ class UsersController {
       // const id = req.params.id;
       const { _id, role } = req.user;
       const userData = await usersService.updateProfile(user, _id, role);
+      emitUsersUpdate();
       return res.json(userData);
     } catch (err) {
       console.log('err');

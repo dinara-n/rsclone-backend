@@ -4,12 +4,20 @@ import User from "../models/User.js";
 import { validationResult } from 'express-validator';
 import companiesService from "../service/companiesService.js";
 import ApiError from "../errors/apiError.js";
+import emitter from "../emitter/emitter.js";
 
 const handleValidationErrors = (req, next, message) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next(ApiError.BadRequest(message, errors.array()));
   }
+};
+
+const emitCompaniesUpdate = async (_id, role) => {
+  const archived = false;
+  const clients = await companiesService.getCompanies(archived, _id, role);
+  console.log(clients);
+  emitter.emit('update', JSON.stringify({ clients }));
 };
 
 class CompaniesController {
@@ -19,7 +27,9 @@ class CompaniesController {
       handleValidationErrors(req, next, 'Error while adding company');
       const company = req.body;
       const userId = req.user?.id || null;
+      const { role } = req.user;
       const companyData = await companiesService.addCompany(company, userId);
+      emitCompaniesUpdate(userId, role);
       return res.status(201).json(companyData);
     } catch (err) {
       console.log('err');
@@ -34,6 +44,7 @@ class CompaniesController {
       const id = req.params.id;
       const { role } = req.user;
       const companyData = await companiesService.updateCompany(company, id, role);
+      emitCompaniesUpdate(id, role);
       return res.json(companyData);
     } catch (err) {
       console.log('err');
@@ -44,7 +55,9 @@ class CompaniesController {
   async deleteCompany(req, res, next) {
     try {
       const id = req.params.id;
+      const { role } = req.user;
       const companyData = await companiesService.deleteCompany(id);
+      emitCompaniesUpdate(id, role);
       return res.json(companyData);
     } catch (err) {
       console.log('err');
@@ -55,8 +68,10 @@ class CompaniesController {
   async undeleteCompany(req, res, next) {
     try {
       const id = req.params.id;
+      const { role } = req.user;
       const company = req.body;
       const companyData = await companiesService.undeleteCompany(id, company);
+      emitCompaniesUpdate(id, role);
       return res.json(companyData);
     } catch (err) {
       console.log('err');
