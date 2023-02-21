@@ -22,10 +22,10 @@ class ClientsController {
 
   async addClient(req, res, next) {
     try {
-      const { client, companyId } = req.body;
+      const { contact, companyId } = req.body;
       const userId = req.user?.id || null;
       const { role } = req.user;
-      const companyData = await clientsService.addClient(client, companyId);
+      const companyData = await clientsService.addClient(contact, companyId);
       emitClientsUpdate(userId, role);
       return res.status(201).json(companyData);
     } catch (err) {
