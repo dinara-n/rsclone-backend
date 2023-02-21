@@ -1,4 +1,3 @@
-import 'dotenv/config.js';
 import { Router } from "express";
 const router = new Router();
 import emitter from "../emitter/emitter.js";
@@ -15,7 +14,6 @@ import connectMiddleware from "../middleware/connectMiddleware.js";
 
 const sendUpdatedData = (req, res) => {
   res.writeHead(200, {
-    'Access-Control-Allow-Origin': CLIENT_URL,
     'Connection': 'keep-alive',
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
