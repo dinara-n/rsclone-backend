@@ -43,7 +43,7 @@ class TodosService {
     if (data?.endTime) oldTodo.data.endTime = data.endTime;
     if (data?.title) oldTodo.data.title = data.title;
     if (data?.text) oldTodo.data.text = data.text;
-    if (isDone) oldTodo.isDone = isDone;
+    if (isDone !== undefined) oldTodo.isDone = isDone;
     if (company) {
       oldTodo.company = company;
       const companyData = await Company.findOne({ id: company });
