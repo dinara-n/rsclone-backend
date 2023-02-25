@@ -26,7 +26,7 @@ class CompaniesController {
     try {
       handleValidationErrors(req, next, 'Error while adding company');
       const company = req.body;
-      const userId = req.user?.id || null;
+      const userId = req.user?._id || null;
       const { role } = req.user;
       const companyData = await companiesService.addCompany(company, userId);
       emitCompaniesUpdate(userId, role);
