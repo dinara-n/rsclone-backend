@@ -24,12 +24,17 @@ class CompaniesService {
 
   async addCompany(company, userId) {
 
-    if (!company?.contacts?.commonPhone && !company?.contacts?.commonMail) {
-      throw ApiError.BadRequest('Company must have a phone or an email');
+    if (!company?.contacts?.commonPhone) {
+      throw ApiError.BadRequest('Company\'s phone number is required');
     }
 
-    await validateInn(company?.data?.inn);
-    await validateMail(company?.contacts?.commonMail);
+    if (company?.data?.inn) {
+      await validateInn(company.data.inn);
+    }
+
+    // if (company?.contacts?.commonMail) {
+    //   await validateMail(company.contacts.commonMail);
+    // }
 
     // const users = (company?.users) ? company.users.map(async (user) => await User.findById(user)) : [];
     // console.log(users);
