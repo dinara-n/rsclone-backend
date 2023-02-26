@@ -6,15 +6,15 @@ import ApiError from "../errors/apiError.js";
 import Company from "../models/Company.js";
 import Todo from "../models/Todo.js";
 
-const validateInn = async (inn) => {
-  const innAlreadyExists = await Company.findOne({ 'data.inn': inn });
+const validateInn = async (inn, id) => {
+  const innAlreadyExists = (id) ? await Company.findOne({ 'data.inn': inn, _id: { $ne: id } }) : await Company.findOne({ 'data.inn': inn });
   if (innAlreadyExists) {
     throw ApiError.BadRequest('A company with such an INN already exists');
   }
 };
 
-const validateMail = async (mail) => {
-  const mailAlreadyExists = await Company.findOne({ 'contacts.commonMail': mail });
+const validateMail = async (mail, id) => {
+  const mailAlreadyExists = (id) ? await Company.findOne({ 'contacts.commonMail': mail, _id: { $ne: id } }) : Company.findOne({ 'contacts.commonMail': mail });
   if (mailAlreadyExists) {
     throw ApiError.BadRequest('A company with such an email already exists');
   }
@@ -62,10 +62,10 @@ class CompaniesService {
       throw ApiError.NotFoundError('Company not found');
     }
     if (data?.inn) {
-      await validateInn(data.inn);
+      await validateInn(data.inn, id);
     }
     if (contacts?.commonMail) {
-      await validateMail(data.inn);
+      await validateMail(data.mail, id);
     }
     if (data?.companyName) oldCompany.data.companyName = data.companyName;
     if (data?.inn) oldCompany.data.inn = data.inn;
