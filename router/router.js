@@ -60,11 +60,7 @@ router.get('/auth/refresh', authController.refresh);
 
 router.post('/companies', authMiddleware(), [
   body('data.companyName', 'Company name is required').notEmpty(),
-  // body('data.commonPhone', 'Phone is required').notEmpty(),
   // body('contacts.commonPhone', 'Company phones should be passed as an array').isArray(),
-  // body('contacts.workers', 'Contacts should be passed as an array').isArray(),
-  // body('contacts.workers.*.phone', 'Contacts\' phones should be passed as an array').isArray(),
-  // body('users', 'Users\' ids should be passed as an array').isArray(),
 ], companiesController.addCompany);
 
 router.patch('/companies/:id', authMiddleware(), companiesController.updateCompany);
@@ -92,6 +88,7 @@ router.patch('/todos/:id', authMiddleware(), todosController.updateTodo);
 
 // router.delete('/todos/:id', todosController.deleteTodo);
 
-router.get('/todos', authMiddleware(), authMiddleware(), todosController.getTodos);
+router.get('/todos/:id', authMiddleware(), todosController.getTodo);
+router.get('/todos', authMiddleware(), todosController.getTodos);
 
 export default router;

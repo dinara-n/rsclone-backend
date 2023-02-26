@@ -34,6 +34,17 @@ class TodosController {
     }
   }
 
+  async getTodo(req, res, next) {
+    try {
+      const id = req.params.id;
+      const todoData = await todosService.getTodo(id);
+      return res.json(todoData);
+    } catch (err) {
+      console.log('err');
+      next(err);
+    }
+  }
+
   // async deleteTodo(req, res, next) {
   //   try {
   //     const errors = validationResult(req);

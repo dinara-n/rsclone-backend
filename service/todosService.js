@@ -54,6 +54,14 @@ class TodosService {
     return { updatedData: todo };
   }
 
+  async updateTodo(id) {
+    const todo = await Todo.findById(id);
+    if (!todo) {
+      throw ApiError.NotFoundError('Todo not found');
+    }
+    return todo;
+  }
+
   // async deleteTodo(id) {
   //   // if (!id) {
   //   //   throw ApiError.BadRequest('Needs id to delete todo');
