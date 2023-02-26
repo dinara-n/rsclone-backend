@@ -91,4 +91,6 @@ router.patch('/todos/:id', authMiddleware(), todosController.updateTodo);
 router.get('/todos/:id', authMiddleware(), todosController.getTodo);
 router.get('/todos', authMiddleware(), todosController.getTodos);
 
+app.options('*', cors());
+
 export default router;
