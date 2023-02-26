@@ -65,7 +65,7 @@ class CompaniesService {
       await validateInn(data.inn, id);
     }
     if (contacts?.commonMail) {
-      await validateMail(data.mail, id);
+      await validateMail(contacts.commonMail, id);
     }
     if (data?.companyName) oldCompany.data.companyName = data.companyName;
     if (data?.inn) oldCompany.data.inn = data.inn;
