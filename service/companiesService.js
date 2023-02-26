@@ -68,17 +68,19 @@ class CompaniesService {
       await validateMail(contacts.commonMail, id);
     }
     if (data?.companyName) oldCompany.data.companyName = data.companyName;
-    if (data?.inn) oldCompany.data.inn = data.inn;
-    if (data?.address) oldCompany.data.address = data.address;
-    if (contacts?.commonPhone) oldCompany.contacts.commonPhone = contacts.commonPhone;
-    if (contacts?.commonMail) oldCompany.contacts.commonMail = contacts.commonMail;
+    if (data && data.inn !== undefined) oldCompany.data.inn = data.inn;
+    if (data && data.address !== undefined) oldCompany.data.address = data.address;
+    if (contacts && contacts.commonPhone !== undefined) oldCompany.contacts.commonPhone = contacts.commonPhone;
+    if (contacts && contacts.commonMail !== undefined) oldCompany.contacts.commonMail = contacts.commonMail;
     contacts?.workers?.forEach((worker, index) => {
-      if (worker?.firstName) oldCompany.contacts.workers[index].firstName = worker.firstName;
-      if (worker?.patronymic) oldCompany.contacts.workers[index].patronymic = worker.patronymic;
-      if (worker?.surname) oldCompany.contacts.workers[index].surname = worker.surname;
-      if (worker?.birthday) oldCompany.contacts.workers[index].birthday = worker.birthday;
-      if (worker?.mail) oldCompany.contacts.workers[index].mail = worker.mail;
-      if (worker?.phone) oldCompany.contacts.workers[index].phone = worker.phone;
+      if (worker) {
+        if (worker.firstName !== undefined) oldCompany.contacts.workers[index].firstName = worker.firstName;
+        if (worker.patronymic !== undefined) oldCompany.contacts.workers[index].patronymic = worker.patronymic;
+        if (worker.surname !== undefined) oldCompany.contacts.workers[index].surname = worker.surname;
+        if (worker.birthday !== undefined) oldCompany.contacts.workers[index].birthday = worker.birthday;
+        if (worker.mail !== undefined) oldCompany.contacts.workers[index].mail = worker.mail;
+        if (worker.phone !== undefined) oldCompany.contacts.workers[index].phone = worker.phone;
+      }
     });
     if (users) {
       if (!['admin', 'manager'].includes(userRole)) {

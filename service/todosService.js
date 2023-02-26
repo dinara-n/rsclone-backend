@@ -33,16 +33,19 @@ class TodosService {
       throw ApiError.NotFoundError('Todo not found');
     }
 
-    if (data?.type) oldTodo.data.type = data.type;
-    if (data?.startTime) {
-      oldTodo.data.startTime = data.startTime;
-      const [ year, month, rest ] = todo.data.startTime.split('-');
-      const [ day ] = rest.split('T');
-      oldTodo.extra = { year, month, day };
+    if (data) {
+      if (data.type) oldTodo.data.type = data.type;
+      if (data.startTime) {
+        oldTodo.data.startTime = data.startTime;
+        const [ year, month, rest ] = todo.data.startTime.split('-');
+        const [ day ] = rest.split('T');
+        oldTodo.extra = { year, month, day };
+      }
+      if (data.endTime) oldTodo.data.endTime = data.endTime;
+      if (data.title) oldTodo.data.title = data.title;
+      if (data.text !== undefined) oldTodo.data.text = data.text;
     }
-    if (data?.endTime) oldTodo.data.endTime = data.endTime;
-    if (data?.title) oldTodo.data.title = data.title;
-    if (data?.text) oldTodo.data.text = data.text;
+  
     if (isDone !== undefined) oldTodo.isDone = isDone;
     if (company) {
       oldTodo.company = company;
