@@ -3,7 +3,7 @@ import { Schema, model } from "mongoose";
 const Company = new Schema({
   data: {
     companyName: { type: String, unique: false, required: true },
-    inn: { type: Number, unique: true, required: false },
+    inn: { type: Number, unique: false, required: false },
     address: { type: String, unique: false, required: false },
   },
   contacts: {
