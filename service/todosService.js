@@ -54,7 +54,7 @@ class TodosService {
     return { updatedData: todo };
   }
 
-  async updateTodo(id) {
+  async getTodo(id) {
     const todo = await Todo.findById(id);
     if (!todo) {
       throw ApiError.NotFoundError('Todo not found');
