@@ -104,7 +104,7 @@ class UsersService {
   async getUsers(queryArchived) {
     const archived = (queryArchived === 'true') ? true : false;
     const users = await User
-      .find({ archived }, { "data.firstName": 1, "data.patronymic": 1, "data.surname": 1, "data.birthday": 1, "data.mail": 1, "data.phone": 1, "role": 1 })
+      .find({ archived, role: { $ne: "admin" } }, { "data.firstName": 1, "data.patronymic": 1, "data.surname": 1, "data.birthday": 1, "data.mail": 1, "data.phone": 1, "role": 1 })
       .populate({ path: 'companies', select: '_id users data.companyName workers.*.firstName workers.*.surname workers.*._id' })
       .populate({ path: 'todos', select: '_id isDone company users data extra' });
     return users;
