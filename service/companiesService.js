@@ -22,7 +22,7 @@ const validateMail = async (mail, id) => {
 
 class CompaniesService {
 
-  async addCompany(company, userId) {
+  async addCompany(company, userId, role) {
 
     if (!company?.contacts?.commonPhone) {
       throw ApiError.BadRequest('Company\'s phone number is required');
@@ -44,8 +44,12 @@ class CompaniesService {
     // if (users.length === 0 || !hasActiveUsers) {
     //   throw ApiError.BadRequest('No active users specified');
     // }
-    if (!company.users) {
+    if (!company.users && role !== 'admin') {
       company.users = [userId];
+    }
+
+    if (!company.users && role === 'admin') {
+      throw ApiError.BadRequest('Admin cannot be appointed to a company. Please add a user to work with the company');
     }
 
     const companyData = await Company.create({ ...company, archived: false });
