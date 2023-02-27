@@ -28,7 +28,7 @@ class CompaniesController {
       const company = req.body;
       const userId = req.user?._id || null;
       const { role } = req.user;
-      const companyData = await companiesService.addCompany(company, userId);
+      const companyData = await companiesService.addCompany(company, userId, role);
       emitCompaniesUpdate(userId, role);
       return res.status(201).json(companyData);
     } catch (err) {
