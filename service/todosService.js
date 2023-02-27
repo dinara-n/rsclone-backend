@@ -85,6 +85,9 @@ class TodosService {
 
   async getTodos(queryParams, _id, role) {
     let [ year, month, day ] = queryParams.date ? queryParams.date.split('-') : '';
+    if ((role === 'admin' || role === 'manager') && queryParams.user) {
+      _id = queryParams.user;
+    }
 
     if (month && !(month > 0 && month <= 12) || year && isNaN(year)) {
       throw ApiError.BadRequest('Incorrect date');
