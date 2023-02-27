@@ -5,8 +5,8 @@ import tokenService from "./tokenService.js";
 import { AuthDto } from "../dtos/authDto.js";
 import ApiError from "../errors/apiError.js";
 
-const validateMail = async (mail) => {
-  const alreadyExists = await User.findOne({ 'data.mail': mail });
+const validateMail = async (mail, id) => {
+  const alreadyExists = (id) ? await User.findOne({ 'data.mail': mail, _id: { $ne: id } }) : await User.findOne({ 'data.mail': mail });
   if (alreadyExists) {
     throw ApiError.BadRequest('User with such email already exists');
   }
@@ -44,7 +44,7 @@ class UsersService {
     }
 
     if (mail && mail !== oldUser.data.mail) {
-      await validateMail(mail);
+      await validateMail(mail, id);
     }
 
     if (role) {
@@ -137,7 +137,7 @@ class UsersService {
     }
 
     if (mail) {
-      await validateMail(mail);
+      await validateMail(mail, id);
     }
 
     if (role) {
