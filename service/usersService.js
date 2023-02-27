@@ -149,7 +149,7 @@ class UsersService {
     //   throw ApiError.NotFoundError('User not found');
     // }
     if (data?.firstName) oldUser.data.firstName = data.firstName;
-    if (data?.patronymic) oldUser.data.patronymic = data.patronymic;
+    if (data && data.patronymic !== undefined) oldUser.data.patronymic = data.patronymic;
     if (data?.surname) oldUser.data.surname = data.surname;
     if (data?.birthday) oldUser.data.birthday = data.birthday;
     if (data?.mail) oldUser.data.mail = data.mail;
