@@ -1,3 +1,190 @@
+Деплой: https://rsclone-backend-production.up.railway.app
+
+Для отправки запросов на сервер вначале нужно авторизоваться (см. Log In). Затем из ответа сервера скопировать accessToken и добавить к своим запросам хедер вида 'Authorization': 'Bearer [accessToken]'. Токен действует 15 минут. По истечении этого времени нужно обновить авторизацию (см. Refresh) или авторизоваться снова, и вставить в соответствующий хедер новый accessToken.
+
+**Log In**
+----
+Logs a user in.\
+Авторизует пользователя.
+
+<details>
+
+* **URL**
+
+    /auth/login
+
+* **Method:**
+
+    `POST`
+
+* **Headers:**
+
+    `'Content-Type': 'application/json'`
+
+*  **URL Params**
+
+    None
+
+* **Query Params**
+
+    None
+
+* **Data Params**\
+    Руководитель:
+
+    ```json
+      {
+        "mail": "b@gmail.com",
+        "password": "123321123"
+      }
+    ```
+    
+    Продавец:
+    
+    ```json
+      {
+        "mail": "d@gmail.com",
+        "password": "123321123"
+      }
+    ```
+
+* **Success Response:**
+
+  * **Code:** 200 OK <br />
+    **Content:** 
+    ```json
+      {
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYWlsIjoiYkBnbWFpbC5jb20iLCJfaWQiOiI2M2UzN2YyNTc4ZTk3NmY3ZWVjNjMyZWEiLCJyb2xlIjoibWFuYWdlciIsImlhdCI6MTY3NzU4MjM0OCwiZXhwIjoxNjc3NTgzMjQ4fQ.X2eyld4n-ia5p-YsqTExPHpM62UwFK90SYFmPeYr770",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYWlsIjoiYkBnbWFpbC5jb20iLCJfaWQiOiI2M2UzN2YyNTc4ZTk3NmY3ZWVjNjMyZWEiLCJyb2xlIjoibWFuYWdlciIsImlhdCI6MTY3NzU4MjM0OCwiZXhwIjoxNjc4ODc4MzQ4fQ.i_HXvg98e4hFqFPs80OdBwrxoBozXbdzC4I6txN2vBg",
+    "user": {
+        "mail": "b@gmail.com",
+        "_id": "63e37f2578e976f7eec632ea",
+        "role": "manager"
+    }
+      }
+    ```
+ 
+* **Error Response:**
+
+    * **Code:** 400 BAD REQUEST <br />
+
+    * **Code:** 404 NOT FOUND <br />
+
+* **Notes:**
+
+   None
+   
+</details>
+
+**Refresh**
+----
+Returns new tokens.\
+Возвращает новые токены.
+
+<details>
+
+* **URL**
+
+    /auth/refresh
+
+* **Method:**
+
+    `GET`
+
+* **Headers:**
+    
+    None
+
+*  **URL Params**
+
+    None
+
+* **Query Params**
+
+    None
+
+* **Data Params**
+
+    None
+
+* **Success Response:**
+
+  * **Code:** 200 OK <br />
+    **Content:** 
+    ```json
+      {
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYWlsIjoiYkBnbWFpbC5jb20iLCJfaWQiOiI2M2UzN2YyNTc4ZTk3NmY3ZWVjNjMyZWEiLCJyb2xlIjoibWFuYWdlciIsImlhdCI6MTY3NzU4MjM0OCwiZXhwIjoxNjc3NTgzMjQ4fQ.X2eyld4n-ia5p-YsqTExPHpM62UwFK90SYFmPeYr770",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYWlsIjoiYkBnbWFpbC5jb20iLCJfaWQiOiI2M2UzN2YyNTc4ZTk3NmY3ZWVjNjMyZWEiLCJyb2xlIjoibWFuYWdlciIsImlhdCI6MTY3NzU4MjM0OCwiZXhwIjoxNjc4ODc4MzQ4fQ.i_HXvg98e4hFqFPs80OdBwrxoBozXbdzC4I6txN2vBg",
+    "user": {
+        "mail": "b@gmail.com",
+        "_id": "63e37f2578e976f7eec632ea",
+        "role": "manager"
+    }
+      }
+    ```
+ 
+* **Error Response:**
+
+    * **Code:** 401 UNAUTHORIZED <br />
+
+* **Notes:**
+
+    To successfully receive new tokens make sure that cookies have refreshToken in them. The refresh token is added to cookies automatically at log in.\
+    Для того, чтобы запрос успешно отработал, в куках должен быть записан refreshToken. Он записывается туда автоматически при авторизации.
+
+</details>
+
+**Log Out**
+----
+Logs a user out.\
+Совершает логаут пользователя.
+
+<details>
+
+* **URL**
+
+    /auth/logout
+
+* **Method:**
+
+    `POST`
+
+* **Headers:**
+
+    `'Content-Type': 'application/json'`
+
+*  **URL Params**
+
+    None
+
+* **Query Params**
+
+    None
+
+* **Data Params**
+    
+    None
+
+* **Success Response:**
+
+  * **Code:** 200 OK <br />
+    **Content:** 
+    ```json
+      {
+        "logout": true
+      }
+    ```
+ 
+* **Error Response:**
+
+    None
+
+* **Notes:**
+
+   None
+   
+</details>
+
 **Get Users**
 ----
 Returns json data about users.\
@@ -16,9 +203,6 @@ Returns json data about users.\
 * **Headers:**
     
     `'Authorization': 'Bearer [access-token]'`
-
-    Is inserted into requests automatically by an axios interceptor.\
-    Вставляется в запросы автоматически.
 
 *  **URL Params**
 
@@ -45,25 +229,66 @@ Returns json data about users.\
       [
         {
           "data": {
-              "firstName": "B",
-              "patronymic": "B",
-              "surname": "B",
-              "birthday": "1989-12-08",
-              "mail": "b@gmail.com",
-              "phone": "+777"
+            "firstName": "Brian",
+            "patronymic": "",
+            "surname": "Smith",
+            "birthday": "1989-12-08",
+            "mail": "b@gmail.com",
+            "phone": "+77743212121"
           },
           "_id": "63e37f2578e976f7eec632ea",
           "role": "manager",
-          "companies": [],
-          "todos": [],
+          "companies": [
+            {
+                "data": {
+                    "companyName": "Cyber Company"
+                },
+                "_id": "63e3e28f3bf7fbab6532f051",
+                "users": [
+                    "63e37f79609334e79cd043d9",
+                    "63e37fa2609334e79cd043dc",
+                    "63e37f2578e976f7eec632ea"
+                ],
+                "id": "63e3e28f3bf7fbab6532f051"
+            },
+            ...
+          ],
+          "todos": [
+            {
+                "data": {
+                    "type": "common",
+                    "startTime": "2023-02-09T08:00",
+                    "endTime": "2023-02-09T09:30",
+                    "title": "заголовок таска",
+                    "text": "тело таска"
+                },
+                "extra": {
+                    "year": "2023",
+                    "month": "02",
+                    "day": "09"
+                },
+                "_id": "63e3edd4079d257910bc50ca",
+                "isDone": true,
+                "company": "63e3e28f3bf7fbab6532f051",
+                "users": [
+                    "63e37f79609334e79cd043d9",
+                    "63e37fa2609334e79cd043dc",
+                    "63e37f2578e976f7eec632ea"
+                ]
+            },
+            ...
+          ],
           "id": "63e37f2578e976f7eec632ea"
-        }
+        },
+        ...
       ]
     ```
  
 * **Error Response:**
 
-    None
+    * **Code:** 401 UNAUTHORIZED <br />
+
+    * **Code:** 403 FORBIDDEN <br />
 
 * **Notes:**
 
@@ -90,9 +315,6 @@ Creates a new user.\
 
     `'Authorization': 'Bearer [access-token]'`
 
-    Is inserted into requests automatically by an axios interceptor.\
-    Вставляется в запросы автоматически.
-
     `'Content-Type': 'application/json'`
 
 *  **URL Params**
@@ -108,40 +330,40 @@ Creates a new user.\
     ```json
       {
         "data": {
-            "firstName": "I",
-            "patronymic": "I",
-            "surname": "I",
-            "birthday": "1985-12-03",
-            "mail": "i@gmail.com",
-            "phone": "+777",
+            "firstName": "Инесса",
+            "patronymic": "Михайловна",
+            "surname": "Рябчик",
+            "birthday": "1975-10-07",
+            "mail": "inessa@gmail.com",
+            "phone": "+77742548",
             "password": "123321123"
         },
         "role": "salesman",
         "settings" : {
-          "language": "ru"
+          "language": "en"
         }
       }
     ```
 
 * **Success Response:**
 
-  * **Code:** 200 OK <br />
+  * **Code:** 201 CREATED <br />
     **Content:** 
     ```json
       {
         "newUser": {
             "data": {
-                "firstName": "I",
-                "patronymic": "I",
-                "surname": "I",
-                "birthday": "1985-12-03",
-                "mail": "i@gmail.com",
-                "phone": "+777",
+                "firstName": "Инесса",
+                "patronymic": "Михайловна",
+                "surname": "Рябчик",
+                "birthday": "1975-10-07",
+                "mail": "inessa@gmail.com",
+                "phone": "+77742548",
                 "password": "123321123"
             },
             "role": "salesman",
             "settings": {
-                "language": "ru"
+                "language": "en"
             }
         }
       }
@@ -157,8 +379,8 @@ Creates a new user.\
 
 * **Notes:**
 
-    All fields except 'settings' are required. Accepted roles: 'manager', 'salesman'. Mail should be unique and a correct email. Password should be at least 8 symbols long.\
-    Все поля кроме 'settings' обязательны. Поле mail должно быть уникальным и в правильном формате. Пароль должнен быть длиной не менее 8 символов.
+    Only manager and admin can create new users. All fields except 'settings' are required. Accepted roles: 'manager', 'salesman'. Mail should be unique and a correct email. Password should be at least 8 symbols long. Role must be either 'manager' or 'salesman'.\
+    Только менеджер и админ имеют право создавать новых пользователей. Все поля кроме 'patronymic' и 'settings' обязательны. Поле mail должно быть уникальным и в правильном формате. Пароль должнен быть длиной не менее 8 символов. В качестве роли можно указать только 'manager' или 'salesman'.
 </details>
 
 **Update user**
@@ -179,9 +401,6 @@ Updates attributes of specified user.\
 * **Headers:**
 
     `'Authorization': 'Bearer [access-token]'`
-
-    Is inserted into requests automatically by an axios interceptor.\
-    Вставляется в запросы автоматически.
 
     `'Content-Type': 'application/json'`
 
@@ -254,9 +473,6 @@ Mark specified user as 'archived'.\
 * **Headers:**
 
     `'Authorization': 'Bearer [access-token]'`
-
-    Is inserted into requests automatically by an axios interceptor.\
-    Вставляется в запросы автоматически.
 
 *  **URL Params**
 
@@ -334,9 +550,6 @@ Mark specified user as not 'archived'.\
 * **Headers:**
 
     `'Authorization': 'Bearer [access-token]'`
-
-    Is inserted into requests automatically by an axios interceptor.\
-    Вставляется в запросы автоматически.
 
     `'Content-Type': 'application/json'`
 
@@ -421,9 +634,6 @@ Returns json data about companies.\
     
     `'Authorization': 'Bearer [access-token]'`
 
-    Is inserted into requests automatically by an axios interceptor.\
-    Вставляется в запросы автоматически.
-
 *  **URL Params**
 
     None
@@ -445,55 +655,40 @@ Returns json data about companies.\
 
   * **Code:** 200 OK <br />
     **Content:**
-    Without query params:
+    
     ```json
-      [
+    [
         {
-          "data": {
-              "firstName": "B",
-              "patronymic": "B",
-              "surname": "B",
-              "birthday": "1989-12-08",
-              "mail": "b@gmail.com",
-              "phone": "+777"
-          },
-          "_id": "63e37f2578e976f7eec632ea",
-          "role": "manager",
-          "companies": [],
-          "todos": [],
-          "id": "63e37f2578e976f7eec632ea"
+            "data": {
+                "companyName": "Мотиватор",
+                "inn": 1232102311,
+                "address": "asdasd"
+            },
+            "contacts": {
+                "commonPhone": [
+                    "+78124267070"
+                ],
+                "commonMail": "office@motivator.ru",
+                "workers": []
+            },
+            "_id": "63fc910fdd900e640ce6e8fb",
+            "users": [
+                {
+                    "data": {
+                        "surname": "D",
+                        "mail": "d@gmail.com"
+                    },
+                    "_id": "63e37fa2609334e79cd043dc",
+                    "role": "salesman",
+                    "id": "63e37fa2609334e79cd043dc"
+                }
+            ],
+            "__v": 0,
+            "todos": [],
+            "id": "63fc910fdd900e640ce6e8fb"
         },
         ...
-      ]
-    ```
-    '?range=month'
-    ```json
-      [
-        {
-          "complete": 0,
-          "future": 0,
-          "missed": 0
-        },
-        ...
-      ]
-    ```
-    '?range=day'
-    ```json
-      [
-        "todos": [
-          ...
-        ],
-        "todosPlacement": [
-          {
-            "_id": "63e82f3bdcda56cdb4cd0607",
-            "start": 1676174400000,
-            "end": 1676179800000,
-            "column": 1
-          },
-          ...
-        ],
-        "columnsNumber": 4
-      ]
+    ]
     ```
  
 * **Error Response:**
@@ -524,9 +719,6 @@ Creates a new company.\
 * **Headers:**
 
     `'Authorization': 'Bearer [access-token]'`
-
-    Is inserted into requests automatically by an axios interceptor.\
-    Вставляется в запросы автоматически.
 
     `'Content-Type': 'application/json'`
 
@@ -573,7 +765,7 @@ Creates a new company.\
 
 * **Success Response:**
 
-  * **Code:** 200 OK <br />
+  * **Code:** 201 CREATED <br />
     **Content:** 
     ```json
       {
@@ -623,8 +815,8 @@ Creates a new company.\
 
 * **Notes:**
 
-    Company name is required. Either commonPhone or mail are required. Mail should be unique and a correct email.\
-    Название компании обязательно. Обязателен телефон или mail компании (можно одно из двух). Поле mail должно быть уникальным и в правильном формате.
+    Company name and phone are required. Mail should be unique and a correct email.\
+    Название и телефон компании обязательны. Поле mail должно быть уникальным и в правильном формате.
 </details>
 
 **Update company**
@@ -645,9 +837,6 @@ Updates attributes of a specified company.\
 * **Headers:**
 
     `'Authorization': 'Bearer [access-token]'`
-
-    Is inserted into requests automatically by an axios interceptor.\
-    Вставляется в запросы автоматически.
 
     `'Content-Type': 'application/json'`
 
@@ -739,9 +928,6 @@ Mark specified company as 'archived'.\
 * **Headers:**
 
     `'Authorization': 'Bearer [access-token]'`
-
-    Is inserted into requests automatically by an axios interceptor.\
-    Вставляется в запросы автоматически.
 
 *  **URL Params**
 
@@ -934,9 +1120,6 @@ Returns json data about todos.\
     
     `'Authorization': 'Bearer [access-token]'`
 
-    Is inserted into requests automatically by an axios interceptor.\
-    Вставляется в запросы автоматически.
-
 *  **URL Params**
 
     None
@@ -954,6 +1137,11 @@ Returns json data about todos.\
 
     If `range=day` param is passed, api returns json with todos for the specified day and column number for those todos. If 'date' param is not passed, current date will be used.\
     Если передан параметр `range=day`, апи вернет json с задачами за указанный день и номером колонки задачи. Если параметр 'date' не передан, возьмется текущая дата.
+    
+    `user=[id]`
+
+    By default salesman receives only his/her own tasks, while manager and admin receive all users' tasks. If `user=[id]` parameter is passed, api will return tasks of the specified user.\
+    По умолчанию продавец получает только свои задачи, а менеджер и админ получают задачи всех пользователей. Если передан параметр `user=[id]`, апи вернет json с задачами указанного пользователя.
 
     If query params are not passed, api will return all tasks.\
     Если query-параметры не указаны, вернется список задач за все время.
@@ -966,60 +1154,56 @@ Returns json data about todos.\
 
   * **Code:** 200 OK <br />
     **Content:** 
+    
+    Without query params:
+    
     ```json
       [
         {
           "data": {
-              "type": "common",
-              "startTime": "2023-02-09T08:00",
-              "endTime": "2023-02-09T09:30",
-              "title": "заголовок таска",
-              "text": "тело таска"
+              "firstName": "B",
+              "patronymic": "B",
+              "surname": "B",
+              "birthday": "1989-12-08",
+              "mail": "b@gmail.com",
+              "phone": "+777"
           },
-          "_id": "63e3edd4079d257910bc50ca",
-          "isDone": true,
-          "company": {
-              "data": {
-                  "companyName": "CB"
-              },
-              "contacts": {
-                  "workers": [
-                      {
-                          "firstName": "CBA",
-                          "patronymic": "CBA",
-                          "surname": "CBA"
-                      },
-                      {
-                          "firstName": "CBB",
-                          "patronymic": "CBB",
-                          "surname": "CBB"
-                      }
-                  ]
-              },
-              "_id": "63e3e28f3bf7fbab6532f051",
-              "id": "63e3e28f3bf7fbab6532f051"
+          "_id": "63e37f2578e976f7eec632ea",
+          "role": "manager",
+          "companies": [],
+          "todos": [],
+          "id": "63e37f2578e976f7eec632ea"
+        },
+        ...
+      ]
+    ```
+    '?range=month'
+    ```json
+      [
+        {
+          "complete": 0,
+          "future": 0,
+          "missed": 0
+        },
+        ...
+      ]
+    ```
+    '?range=day'
+    ```json
+      [
+        "todos": [
+          ...
+        ],
+        "todosPlacement": [
+          {
+            "_id": "63e82f3bdcda56cdb4cd0607",
+            "start": 1676174400000,
+            "end": 1676179800000,
+            "column": 1
           },
-          "users": [
-              {
-                  "data": {
-                      "surname": "C",
-                      "mail": "c@gmail.com"
-                  },
-                  "_id": "63e37f79609334e79cd043d9",
-                  "role": "salesman",
-                  "id": "63e37f79609334e79cd043d9"
-              },
-              {
-                  "data": {
-                      "surname": "D",
-                      "mail": "d@gmail.com"
-                  },
-                  "_id": "63e37fa2609334e79cd043dc",
-                  "role": "salesman",
-                  "id": "63e37fa2609334e79cd043dc"
-              }
-          ]
-        }
+          ...
+        ],
+        "columnsNumber": 4
       ]
     ```
  
@@ -1052,9 +1236,6 @@ Creates a new todo.\
 
     `'Authorization': 'Bearer [access-token]'`
 
-    Is inserted into requests automatically by an axios interceptor.\
-    Вставляется в запросы автоматически.
-
     `'Content-Type': 'application/json'`
 
 *  **URL Params**
@@ -1083,7 +1264,7 @@ Creates a new todo.\
 
 * **Success Response:**
 
-  * **Code:** 200 OK <br />
+  * **Code:** 201 CREATED <br />
     **Content:** 
     ```json
       {
@@ -1145,9 +1326,6 @@ Updates attributes of specified todo.\
 
     `'Authorization': 'Bearer [access-token]'`
 
-    Is inserted into requests automatically by an axios interceptor.\
-    Вставляется в запросы автоматически.
-
     `'Content-Type': 'application/json'`
 
 *  **URL Params**
@@ -1196,16 +1374,16 @@ Updates attributes of specified todo.\
 
 </details>
 
-**Get Clients**
+**Get Contacts**
 ----
-Returns json data about clients.\
-Возвращает json с данными о клиентах.
+Returns json data about contacts.\
+Возвращает json с данными о контактах.
 
 <details>
 
 * **URL**
 
-    /clients
+    /contacts
 
 * **Method:**
 
@@ -1214,9 +1392,6 @@ Returns json data about clients.\
 * **Headers:**
     
     `'Authorization': 'Bearer [access-token]'`
-
-    Is inserted into requests automatically by an axios interceptor.\
-    Вставляется в запросы автоматически.
 
 *  **URL Params**
 
@@ -1274,7 +1449,7 @@ Returns json data about clients.\
  
 * **Error Response:**
 
-    None
+    * **Code:** 401 UNAUTHORIZED <br />
 
 * **Notes:**
 
@@ -1282,16 +1457,16 @@ Returns json data about clients.\
 
 </details>
 
-**Add client**
+**Add contact**
 ----
-Creates a new client.\
-Создает нового клиента.
+Creates a new contact.\
+Создает новый контакт.
 
 <details>
 
 * **URL**
 
-    /clients
+    /contacts
 
 * **Method:**
 
@@ -1300,9 +1475,6 @@ Creates a new client.\
 * **Headers:**
 
     `'Authorization': 'Bearer [access-token]'`
-
-    Is inserted into requests automatically by an axios interceptor.\
-    Вставляется в запросы автоматически.
 
     `'Content-Type': 'application/json'`
 
@@ -1318,7 +1490,7 @@ Creates a new client.\
 
     ```json
       {
-        "client": {
+        "contact": {
             "firstName": "CFAa",
             "patronymic": "CFAa",
             "surname": "CFAa",
@@ -1334,7 +1506,7 @@ Creates a new client.\
 
 * **Success Response:**
 
-  * **Code:** 200 OK <br />
+  * **Code:** 201 CREATED <br />
     **Content:** 
     ```json
       {
@@ -1364,16 +1536,16 @@ Creates a new client.\
     
 </details>
 
-**Update client**
+**Update contact**
 ----
-Updates attributes of a specified client.\
-Обновляет данные указанного клиента.
+Updates attributes of a specified contact.\
+Обновляет данные указанного контакта.
 
 <details>
 
 * **URL**
 
-    /clients/:id
+    /contacts/:id
 
 * **Method:**
 
@@ -1382,9 +1554,6 @@ Updates attributes of a specified client.\
 * **Headers:**
 
     `'Authorization': 'Bearer [access-token]'`
-
-    Is inserted into requests automatically by an axios interceptor.\
-    Вставляется в запросы автоматически.
 
     `'Content-Type': 'application/json'`
 
@@ -1442,16 +1611,16 @@ Updates attributes of a specified client.\
 
 </details>
 
-**Delete client**
+**Delete contact**
 ----
-Delete specified client.\
-Удаляет указанного клиента.
+Delete specified contact.\
+Удаляет указанный контакт.
 
 <details>
 
 * **URL**
 
-    /clients/:id
+    /contacts/:id
 
 * **Method:**
 
@@ -1460,9 +1629,6 @@ Delete specified client.\
 * **Headers:**
 
     `'Authorization': 'Bearer [access-token]'`
-
-    Is inserted into requests automatically by an axios interceptor.\
-    Вставляется в запросы автоматически.
 
 *  **URL Params**
 
