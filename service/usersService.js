@@ -156,7 +156,7 @@ class UsersService {
     if (data?.phone) oldUser.data.phone = data.phone;
     if (data?.password) oldUser.data.password = bcrypt.hashSync(password, 5);
     if (role) {
-      if (oldUser.role === 'admin') {
+      if (oldUser.role === 'admin' && role !== 'admin') {
         throw ApiError.BadRequest('Incorrect role. Cannot change admin\'s role');
       }
       oldUser.role = role;
