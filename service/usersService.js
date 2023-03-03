@@ -164,7 +164,7 @@ class UsersService {
     if (settings?.language) oldUser.settings.language = settings.language;
     
     await oldUser.save();
-    return { updatedData: user };
+    return oldUser;
   }
 }
 
