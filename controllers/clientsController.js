@@ -15,6 +15,7 @@ import emitter from "../emitter/emitter.js";
 
 const emitClientsUpdate = async (_id, role) => {
   const contacts = await clientsService.getClients(_id, role);
+  console.log(contacts);
   emitter.emit('update', JSON.stringify({ contacts }));
 };
 
@@ -23,7 +24,7 @@ class ClientsController {
   async addClient(req, res, next) {
     try {
       const { contact, companyId } = req.body;
-      const userId = req.user?.id || null;
+      const userId = req.user?._id || null;
       const { role } = req.user;
       const companyData = await clientsService.addClient(contact, companyId);
       emitClientsUpdate(userId, role);
@@ -39,8 +40,10 @@ class ClientsController {
       const contact = req.body;
       const id = req.params.id;
       const { role } = req.user;
+      const userId = req.user?._id || null;
       const companyData = await clientsService.updateClient(contact, id);
-      emitClientsUpdate(id, role);
+      console.log(userId);
+      emitClientsUpdate(userId, role);
       return res.json(companyData);
     } catch (err) {
       console.log('err');
@@ -52,8 +55,9 @@ class ClientsController {
     try {
       const id = req.params.id;
       const { role } = req.user;
+      const userId = req.user?._id || null;
       const companyData = await clientsService.deleteClient(id);
-      emitClientsUpdate(id, role);
+      emitClientsUpdate(userId, role);
       return res.json(companyData);
     } catch (err) {
       console.log('err');
