@@ -95,8 +95,8 @@ class UsersController {
   async getProfile(req, res, next) {
     try {
       const { _id } = req.user;
-      const users = await usersService.getProfile(_id);
-      res.json(users);
+      const userData = await usersService.getProfile(_id);
+      res.json(userData);
     } catch (err) {
       console.log(err);
       next(err);
@@ -111,7 +111,7 @@ class UsersController {
       const { _id, role } = req.user;
       const userData = await usersService.updateProfile(user, _id, role);
       emitUsersUpdate();
-      emitProfileUpdate(_id);
+      // emitProfileUpdate(_id);
       return res.json(userData);
     } catch (err) {
       console.log('err');
