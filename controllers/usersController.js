@@ -44,7 +44,7 @@ class UsersController {
       const id = req.params.id;
       const userData = await usersService.updateUser(user, id);
       emitUsersUpdate();
-      emitProfileUpdate(id);
+      // emitProfileUpdate(id);
       return res.json(userData);
     } catch (err) {
       console.log('err');
